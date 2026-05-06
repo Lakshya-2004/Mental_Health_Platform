@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Voice + Text Botpress Chat</title>
+
+    <!--  ResponsiveVoice -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=tNuL6DIz"></script>
+
+    <!--  Botpress Webchat -->
+    <script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #b8c6db 0%, #f5f7fa 100%);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #bp-toggle-chat {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #3276EA;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #bp-embedded-webchat iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            border-radius: 16px;
+            position: relative !important;
+            box-shadow: none !important;
+        }
+
+        .bp-widget-button,
+        .bp-floating-button {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Trigger Button -->
+    <button id="bp-toggle-chat">Start Chat</button>
+
+    <!-- Embedded Chat Container -->
+    <div id="bp-embedded-webchat"></div>
+
+    <script>
+        let userInteracted = false;
+
+        const unlockAudio = () => {
+            if (!userInteracted) {
+                userInteracted = true;
+                const utterance = new SpeechSynthesisUtterance('');
+                speechSynthesis.speak(utterance);
+            }
+        };
+        window.addEventListener("click", unlockAudio);
+
+
+
+
+
+        window.addEventListener("keydown", unlockAudio);
+
+        function initBotpress(retries = 10) {
+            if (window.botpress && window.botpress.init) {
+                console.log(" Initializing Botpress Embedded...");
+
+                window.botpress.init({
+                    botId: "b7a022e3-94f6-4317-b840-cb0ccea6fe66",
+                    clientId: "0bc71b51-1a41-4fa1-a147-4339105f567a",
+                    selector: "#bp-embedded-webchat",
+                    configuration: {
+                        version: "v2",
+                        embedded: true,
+                        hideWidget: true,
+                        themeMode: "light",
+                        botName: "Your Brand Assistant",
+                        color: "#3276EA",
+                        variant: "solid",
+                        headerVariant: "glass",
+                        radius: 3,
+                        fontFamily: "Abhaya Libre",
+                        feedbackEnabled: false,
+                        soundEnabled: false,
+                        triggerSelector: "#bp-toggle-chat" // 👈 This line connects the button
+
+                    }
+                });
+
+                window.botpress.on("webchat:ready", () => {
+                    console.log(" Botpress ready!");
+                    setTimeout(() => window.botpress.open(), 500);
+
+                    window.botpress.on("incoming_message", (event) => {
+                        const text = event.payload?.text || event.payload?.title || event.preview;
+                        if (userInteracted && text) {
+                            responsiveVoice.cancel();
+                            responsiveVoice.speak(text, "UK English Male");
+                        }
+                    });
+                });
+            } else if (retries > 0) {
+                console.warn("⏳ Botpress not ready, retrying...");
+                setTimeout(() => initBotpress(retries - 1), 500);
+            } else {
+                console.error("Failed to initialize Botpress WebChat");
+            }
+        }
+
+        initBotpress();
+
+        window.botpressWebChat.onEvent(function (event) {
+            if (event.type === 'custom.redirect') {
+                window.open(event.payload.url, '_blank');
+            }
+        });
+    </script>
+</body>
+
+</html>
