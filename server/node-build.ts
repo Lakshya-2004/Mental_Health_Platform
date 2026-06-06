@@ -16,7 +16,7 @@ const distPath = path.join(__dirname, "../spa");
 // Serve static assets
 app.use(express.static(distPath));
 
-// ✅ Express 5–safe SPA fallback
+// Express 5–safe SPA fallback
 app.use((req, res, next) => {
   if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
     return next();

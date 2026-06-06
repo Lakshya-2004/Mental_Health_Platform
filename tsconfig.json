@@ -26,7 +26,7 @@
     "strictNullChecks": false,
 
     /* Path mapping */
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "paths": {
       "@/*": ["./client/*"],
       "@shared/*": ["./shared/*"]

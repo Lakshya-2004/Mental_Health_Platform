@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Typed from "typed.js";
 import Header from "./Header";
+import BackToHome from "@/pages/BackToHome";
 
 const MeditationAssistant: React.FC = () => {
   useEffect(() => {
@@ -37,63 +38,152 @@ const MeditationAssistant: React.FC = () => {
       `🧠 Mood detected: <b>${data.mood.toUpperCase()}</b>`;
 
     document.getElementById("meditationPlayer")!.innerHTML = `
-      <iframe 
-        src="${data.video}"
-        class="w-full h-[260px] rounded-xl mt-5"
-        allowfullscreen
-      ></iframe>
+  <iframe
+    src="${data.video}"
+    class="w-full h-[320px] rounded-[24px] border border-[#d7e8d8] shadow-md"
+    allowfullscreen
+  ></iframe>
 
-      <iframe 
-        src="${data.audio}"
-        class="w-full h-[120px] rounded-xl mt-4"
-        allowfullscreen
-      ></iframe>
-    `;
+  <iframe
+    src="${data.audio}"
+    class="w-full h-[140px] rounded-[24px] border border-[#d7e8d8] shadow-md"
+    allowfullscreen
+  ></iframe>
+`;
   };
 
-  return (
-    <div className="min-h-screen bg-beacon-beige flex justify-center items-center relative pt-20">
+ return (
+  <div className="relative min-h-screen bg-[#e8f0e3] overflow-hidden">
 
-      <div className="absolute top-0 left-0 w-full">
-        <Header />
-      </div>
+    <Header />
+   <BackToHome/>
+    {/* Background blobs */}
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute top-20 left-10 w-72 h-72 bg-green-300/30 rounded-full blur-[120px]" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-emerald-200/40 rounded-full blur-[150px]" />
+    </div>
 
-      <div className="
-        w-[90%] max-w-[720px] p-10 rounded-[25px] bg-white text-center 
-        shadow-[0_0_25px_rgba(0,0,0,0.15)]
-      ">
-        <h2 className="text-[26px] font-semibold text-gray-800">
-          🧘 AI Meditation Assistant
-        </h2>
+    <div className="flex items-center justify-center min-h-screen px-4 pt-24 pb-10">
 
-        <div className="typing text-[#4caf50] h-[25px] mt-2"></div>
+      <div
+        className="
+        relative
+        w-full
+        max-w-3xl
+        bg-white/65
+        backdrop-blur-2xl
+        rounded-[36px]
+        overflow-hidden
+        border border-white/70
+        shadow-[0_20px_80px_rgba(60,90,60,0.12)]
+      "
+      >
 
-        <input
-          id="moodText"
-          type="text"
-          placeholder="Type how you feel..."
+        {/* Shimmer line */}
+        <div
           className="
-            mt-5 w-[85%] p-3 rounded-xl border
-            focus:outline-none focus:ring-2 focus:ring-green-400
-          "
+          h-1.5
+          bg-gradient-to-r
+          from-green-400
+          via-emerald-500
+          to-green-300
+        "
         />
 
-        <button
-          onClick={detectMood}
-          className="
-            mt-6 px-6 py-3 rounded-xl
-            bg-green-500 text-white font-medium
-            hover:scale-105 transition
-          "
-        >
-          Start Meditation 🌿
-        </button>
+        <div className="p-10">
 
-        <div id="result" className="mt-6 text-lg"></div>
-        <div id="meditationPlayer" className="mt-4"></div>
+          <h1 className="text-center text-4xl md:text-5xl font-bold text-[#294231]">
+            AI Meditation Assistant
+          </h1>
+
+          <p className="text-center text-[#5c6f61] mt-4 text-lg">
+            Relax your mind, reduce stress, and discover
+            personalized meditation sessions.
+          </p>
+
+          <div
+            className="
+            typing
+            text-center
+            text-[#5e8a68]
+            font-medium
+            text-lg
+            h-8
+            mt-6
+          "
+          />
+
+          <div className="mt-8">
+
+            <label className="block text-[#294231] font-semibold mb-2">
+              Describe your current mood
+            </label>
+
+            <input
+              id="moodText"
+              type="text"
+              placeholder="I'm feeling anxious about exams..."
+              className="
+              w-full
+              h-14
+              px-5
+              rounded-2xl
+              border
+              border-[#d7e8d8]
+              bg-[#f8fcf8]
+              focus:outline-none
+              focus:ring-2
+              focus:ring-[#7BC47F]
+              transition
+            "
+            />
+
+            <button
+              onClick={detectMood}
+              className="
+              w-full
+              mt-6
+              h-14
+              rounded-2xl
+              bg-[#7BC47F]
+              hover:bg-[#68B56C]
+              text-white
+              text-lg
+              font-semibold
+              shadow-lg
+              transition-all
+              duration-300
+              hover:scale-[1.02]
+            "
+            >
+              Start Meditation 🌿
+            </button>
+
+          </div>
+
+          <div
+            id="result"
+            className="
+            mt-8
+            text-center
+            text-xl
+            font-medium
+            text-[#294231]
+          "
+          />
+
+          <div
+            id="meditationPlayer"
+            className="
+            mt-8
+            space-y-4
+          "
+          />
+        </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default MeditationAssistant;

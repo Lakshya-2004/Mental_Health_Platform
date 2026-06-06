@@ -1,15 +1,12 @@
-import Header from '@/components/Header';
+
 import React, { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
-
+import BackToHome from './BackToHome';
 // --- API Configuration ---
-const API_URL = 'http://127.0.0.1:5000/api/chat'; 
-const API_RESET_URL = 'http://127.0.0.1:5000/api/reset'; 
+const API_URL = 'http://127.0.0.1:5000/api/chat';
+const API_RESET_URL = 'http://127.0.0.1:5000/api/reset';
 
-// Constants
 const INITIAL_SYSTEM_MESSAGE = "You are MIRA 💫, an empathetic emotional chatbot and close friend.";
 const INITIAL_GREETING = "Hey there! I'm Mira. You can talk to me about anything. I'm here to listen and maybe share a meme or two! What's on your mind today? 😊";
-
-// --- TypeScript Definitions ---
 
 type MessageRole = 'user' | 'model' | 'system';
 type Emotion = 'joy' | 'sadness' | 'anger' | 'fear' | 'disgust' | 'neutral' | 'default';
@@ -35,251 +32,667 @@ interface ChatBubbleProps {
     message: Message;
 }
 
-// --- Chat Bubble Component ---
+// ─── Styles ────────────────────────────────────────────────────────────────────
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Nunito:wght@300;400;500;600&display=swap');
 
+  :root {
+    --cream:             #faf6f0;
+    --warm-white:        #fff9f2;
+    --sage:              #7a9e87;
+    --sage-light:        #b2cbb9;
+    --sage-pale:         #e8f0ea;
+    --terracotta:        #c47c5a;
+    --terracotta-light:  #dfa98e;
+    --terracotta-pale:   #f7ede6;
+    --mocha:             #6b4f3a;
+    --mocha-light:       #9c7b68;
+    --ink:               #2d2420;
+    --mist:              #8a9ba8;
+    --dusty-rose:        #c9858c;
+    --gold:              #c9a84c;
+    --gold-pale:         #f5efd8;
+    --border:            rgba(122,158,135,0.2);
+    --scrollbar:         #d4c9be;
+  }
+
+  .mira-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(178,203,185,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(196,124,90,0.12) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237a9e87' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    font-family: 'Nunito', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  /* ── Chat header ── */
+  .mira-header {
+    padding: 0.9rem 1.4rem;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(107,79,58,0.06);
+  }
+
+  .mira-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--sage), var(--terracotta-light), var(--gold), transparent);
+    opacity: 0.5;
+  }
+
+  .mira-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .mira-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage), var(--terracotta-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px var(--warm-white), 0 0 0 3px var(--sage-light);
+  }
+
+  .mira-header-name {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--mocha);
+    line-height: 1.1;
+  }
+
+  .mira-header-status {
+    font-size: 0.72rem;
+    color: var(--sage);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .mira-status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--sage);
+    border-radius: 50%;
+    animation: status-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .mira-reset-btn {
+    background: transparent;
+    border: 1.5px solid var(--mocha-light);
+    color: var(--mocha-light);
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+  }
+
+  .mira-reset-btn:hover:not(:disabled) {
+    background: var(--mocha-light);
+    color: white;
+  }
+
+  .mira-reset-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* ── Messages area ── */
+  .mira-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    scroll-behavior: smooth;
+  }
+
+  .mira-messages::-webkit-scrollbar { width: 4px; }
+  .mira-messages::-webkit-scrollbar-track { background: transparent; }
+  .mira-messages::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
+
+  /* ── Chat bubbles ── */
+  .mira-bubble-row {
+    display: flex;
+    margin-bottom: 0.6rem;
+    animation: bubble-in 0.25s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes bubble-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .mira-bubble-row.user  { justify-content: flex-end; }
+  .mira-bubble-row.model { justify-content: flex-start; }
+
+  .mira-bubble {
+    max-width: min(72%, 480px);
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    word-break: break-word;
+    position: relative;
+  }
+
+  .mira-bubble.user {
+    background: var(--terracotta-pale);
+    border: 1px solid rgba(196,124,90,0.3);
+    border-bottom-right-radius: 4px;
+    color: var(--mocha);
+    box-shadow: 0 2px 12px rgba(196,124,90,0.1);
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .mira-bubble.model {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-top-left-radius: 4px;
+    color: var(--ink);
+    box-shadow: 0 2px 12px rgba(107,79,58,0.06);
+    font-family: 'Lora', serif;
+  }
+
+  .mira-bubble p {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .mira-emotion-tag {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ── Meme card ── */
+  .mira-meme-card {
+    margin-top: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  .mira-meme-label {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.72rem;
+    color: var(--mocha-light);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .mira-meme-card img {
+    width: 100%;
+    max-height: 260px;
+    object-fit: contain;
+    display: block;
+    background: var(--warm-white);
+  }
+
+  /* ── Timestamp ── */
+  .mira-time {
+    font-size: 0.65rem;
+    color: var(--mocha-light);
+    opacity: 0.55;
+    text-align: right;
+    margin-top: 0.3rem;
+    padding: 0 0.25rem;
+  }
+
+  .mira-bubble-row.model .mira-time { text-align: left; }
+
+  /* ── Typing indicator ── */
+  .mira-typing {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 0.6rem;
+  }
+
+  .mira-typing-bubble {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-top-left-radius: 4px;
+    border-radius: 18px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mira-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--sage-light);
+    border-radius: 50%;
+    animation: typing-bounce 1.2s ease-in-out infinite;
+  }
+
+  .mira-dot:nth-child(2) { animation-delay: 0.2s; }
+  .mira-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* ── Error ── */
+  .mira-error {
+    background: var(--terracotta-pale);
+    border: 1px solid rgba(196,124,90,0.3);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: var(--terracotta);
+    line-height: 1.5;
+    margin: 0.5rem 0;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .mira-error strong { display: block; margin-bottom: 0.2rem; color: var(--mocha); }
+
+  /* ── Date separator ── */
+  .mira-date-sep {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1rem 0 0.5rem;
+    color: var(--mocha-light);
+    opacity: 0.5;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .mira-date-sep::before,
+  .mira-date-sep::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Input area ── */
+  .mira-input-area {
+    padding: 0.85rem 1.2rem 1rem;
+    background: var(--warm-white);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 -1px 3px rgba(107,79,58,0.04);
+  }
+
+  .mira-input-area::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--sage), var(--terracotta-light), var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  .mira-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--cream);
+    border: 1.5px solid rgba(122,158,135,0.3);
+    border-radius: 16px;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .mira-input-row:focus-within {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(122,158,135,0.1);
+    background: white;
+  }
+
+  .mira-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    padding: 0.3rem 0;
+    caret-color: var(--sage);
+  }
+
+  .mira-input::placeholder {
+    color: var(--mocha-light);
+    opacity: 0.5;
+    font-style: italic;
+  }
+
+  .mira-input:disabled {
+    opacity: 0.5;
+  }
+
+  .mira-send-btn {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--terracotta), #b8694a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(196,124,90,0.3);
+  }
+
+  .mira-send-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(196,124,90,0.45);
+  }
+
+  .mira-send-btn:disabled {
+    background: var(--sage-pale);
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* ── Fixed Home button ── */
+  .mira-home-fixed {
+    position: fixed;
+    top: 1rem;
+    right: 1.2rem;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--warm-white);
+    border: 1.5px solid var(--sage);
+    color: var(--sage);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 10px rgba(107,79,58,0.12);
+    transition: all 0.2s ease;
+  }
+
+  .mira-home-fixed:hover {
+    background: var(--sage);
+    color: white;
+    box-shadow: 0 4px 14px rgba(122,158,135,0.3);
+  }
+
+  /* ── Emotion tag colors ── */
+  .emotion-joy     { background: var(--sage-pale);      color: #4a7c5c; }
+  .emotion-sadness { background: rgba(138,155,168,0.15); color: var(--mist); }
+  .emotion-anger   { background: var(--terracotta-pale); color: var(--terracotta); }
+  .emotion-fear    { background: var(--gold-pale);       color: #8a6a1f; }
+  .emotion-disgust { background: rgba(201,133,140,0.15); color: var(--dusty-rose); }
+  .emotion-neutral { background: var(--sage-pale);       color: var(--mocha-light); }
+`;
+
+const EMOTION_EMOJI: Record<string, string> = {
+    joy: '🌿', sadness: '🌧️', anger: '🔥', fear: '🍂', disgust: '💭', neutral: '🌾', default: '✦',
+};
+
+// ─── ChatBubble ─────────────────────────────────────────────────────────────
 const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
     if (message.isHidden) return null;
-    
     const isUser = message.role === 'user';
-    
-    const emotionColors: Record<Emotion, string> = {
-        joy: 'bg-green-100 border-green-300 text-green-800',
-        sadness: 'bg-blue-100 border-blue-300 text-blue-800',
-        anger: 'bg-red-100 border-red-300 text-red-800',
-        fear: 'bg-yellow-100 border-yellow-300 text-yellow-800',
-        disgust: 'bg-purple-100 border-purple-300 text-purple-800',
-        neutral: 'bg-gray-100 border-gray-300 text-gray-800',
-        default: 'bg-gray-100 border-gray-300 text-gray-800',
-    };
-    const emotionColor = message.emotion ? emotionColors[message.emotion] : emotionColors.default;
+    const emoji = message.emotion ? EMOTION_EMOJI[message.emotion] ?? '✦' : '';
+    const timeStr = message.timestamp
+        ? new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : '';
 
     return (
-        <div className={`flex mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-xl shadow-lg transition-all duration-300 ${isUser ? 'bg-indigo-600 text-white rounded-br-none' : `${emotionColor} rounded-tl-none`}`}>
-                <p className="whitespace-pre-wrap">{message.content}</p>
-                
-                {/* Display Emotion for Model replies */}
-                {!isUser && message.emotion && message.emotion !== 'default' && (
-                    <span className="block mt-2 text-xs font-semibold opacity-70">
-                        Emotion: {message.emotion.toUpperCase()}
-                    </span>
-                )}
+        <div className={`mira-bubble-row ${isUser ? 'user' : 'model'}`}>
+            <div>
+                <div className={`mira-bubble ${isUser ? 'user' : 'model'}`}>
+                    <p>{message.content}</p>
 
-                {/* Display Meme Image (only for Model replies) */}
-                {message.memeUrl && (
-                    <div className="mt-3 border-2 border-dashed border-gray-300 p-2 rounded-lg bg-white overflow-hidden">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Here's a meme for you:</p>
-                        <img 
-                            src={message.memeUrl} 
-                            alt={`Meme related to ${message.emotion}`} 
-                            className="w-full h-auto object-contain rounded-md max-h-80"
-                            // Fallback for image loading failure
-                            onError={(e) => { 
-                                const target = e.target as HTMLImageElement;
-                                target.onerror = null; 
-                                target.src="https://placehold.co/300x200/cccccc/333333?text=Meme+Failed+to+Load"; 
-                            }}
-                        />
-                    </div>
-                )}
+                    {!isUser && message.emotion && message.emotion !== 'default' && (
+                        <span className={`mira-emotion-tag emotion-${message.emotion}`}>
+                            {emoji} {message.emotion}
+                        </span>
+                    )}
+
+                    {message.memeUrl && (
+                        <div className="mira-meme-card">
+                            <div className="mira-meme-label">🎭 here's a meme for you</div>
+                            <img
+                                src={message.memeUrl}
+                                alt={`Meme — ${message.emotion}`}
+                                onError={(e) => {
+                                    const t = e.target as HTMLImageElement;
+                                    t.onerror = null;
+                                    t.src = 'https://placehold.co/300x200/1f2820/4e6b58?text=meme+unavailable';
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
+                {timeStr && <div className="mira-time">{timeStr}</div>}
             </div>
         </div>
     );
 };
 
-
-// --- ImageBot (UI Component - User Provided Structure) ---
-
-/**
- * This component handles the Chat UI structure, input, and send button.
- */
+// ─── ImageBot ────────────────────────────────────────────────────────────────
 const ImageBot: React.FC<ImageBotProps> = ({ onSendMessage, onResetChat, isLoading, history, error }) => {
-    const [input, setInput] = useState<string>('');
-    const chatContainerRef = useRef<HTMLDivElement>(null);
+    const [input, setInput] = useState('');
+    const chatRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to the bottom when history changes
     useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [history]);
-
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value);
-    };
+        if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }, [history, isLoading]);
 
     const handleSend = (e: FormEvent) => {
         e.preventDefault();
-        const trimmedInput = input.trim();
-        
-        if (!trimmedInput) return;
-        
-        onSendMessage(trimmedInput);
+        const trimmed = input.trim();
+        if (!trimmed) return;
+        onSendMessage(trimmed);
         setInput('');
     };
-    
+
     return (
-        <div className="flex flex-col h-screen bg-yellow-100 font-sans antialiased">
-            <Header/>
-            <script src="https://cdn.tailwindcss.com"></script>
-            <div className=" my-[120px] flex flex-col w-full max-w-5xl mx-auto shadow-2xl bg-white rounded-lg  h-[90vh]">
-            
-                {/* Header/Controls */}
-                <div className="p-4 border-b border-beacon-teal bg-indigo-400  text-white rounded-t-lg shadow-md flex justify-between items-center sticky top-0 z-10">
-                    <h1 className="text-2xl font-bold tracking-tight">Emotion-Aware Meme Chatbot 💫</h1>
-                    <button
-                        onClick={onResetChat}
-                        disabled={isLoading}
-                        className="bg-white text-indigo-600 hover:bg-indigo-50 px-3 py-1 text-sm font-semibold rounded-full shadow-lg transition-colors duration-200 disabled:opacity-50"
-                    >
-                        Reset Chat
+        <>
+            <style>{styles}</style>
+            <div className="mira-root">
+              
+                {/* Fixed Home button */}
+                <a href="/" className="mira-home-fixed">🏠 Home</a>
+
+                {/* Chat panel header */}
+                <div className="mira-header">
+                    <div className="mira-header-left">
+                        <div className="mira-avatar">🌿</div>
+                        <div>
+                            <div className="mira-header-name">Mira</div>
+                            <div className="mira-header-status">
+                                <span className="mira-status-dot" />
+                                {isLoading ? 'thinking…' : 'here for you'}
+                            </div>
+                        </div>
+                    </div>
+                    <button className="mira-reset-btn" onClick={onResetChat} disabled={isLoading}>
+                        new chat
                     </button>
                 </div>
-                
-                {/* Chat Box Area (Renders actual chat history) */}
-                <div 
-                    ref={chatContainerRef}
-                    className="flex-grow p-4 overflow-y-auto space-y-4"
-                >
-                    {history.map((msg, index) => (
-                        <ChatBubble key={index} message={msg} />
+
+                {/* Messages */}
+                <div className="mira-messages" ref={chatRef}>
+                    <div className="mira-date-sep">today</div>
+
+                    {history.map((msg, i) => (
+                        <ChatBubble key={i} message={msg} />
                     ))}
-                    
-                    {/* Loading Indicator */}
+
                     {isLoading && (
-                        <div className="flex justify-start mb-4">
-                            <div className="max-w-xs p-3 rounded-xl bg-black rounded-tl-none animate-pulse">
-                                <div className="h-2 w-16 bg-gray-400 rounded mb-1"></div>
-                                <div className="h-2 w-24 bg-gray-400 rounded"></div>
+                        <div className="mira-typing">
+                            <div className="mira-typing-bubble">
+                                <span className="mira-dot" />
+                                <span className="mira-dot" />
+                                <span className="mira-dot" />
                             </div>
                         </div>
                     )}
-                    
-                    {/* Error Message */}
+
                     {error && (
-                        <div className="p-3 bg-red-100 text-red-700 border border-red-300 rounded-lg">
-                            <p className="font-semibold">Connection Error:</p>
-                            <p className="text-sm">{error}</p>
+                        <div className="mira-error">
+                            <strong>Connection issue</strong>
+                            {error}
                         </div>
                     )}
-                </div> 
+                </div>
 
-                {/* Input Area */}
-                <form onSubmit={handleSend} className="p-4 border-t border-gray-200 rounded-b-lg">
-                    <div className="flex space-x-3">
-                        <input
-                            type="text"
-                            id="user-input"
-                            value={input}
-                            onChange={handleInputChange}
-                            placeholder={isLoading ? "Mira is thinking..." : "Type how you're feeling..."}
-                            autoComplete="off"
-                            className="flex-grow border border-gray-300 p-3 rounded-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow disabled:bg-gray-100"
-                            disabled={isLoading}
-                        />
-                        <button
-                            type="submit"
-                            id="send-btn"
-                            className="bg-indigo-600 text-white p-3 rounded-full hover:bg-indigo-700 transition-colors duration-200 shadow-md disabled:bg-indigo-300"
-                            disabled={!input.trim() || isLoading}
-                            title="Send Message"
-                        >
-                            {isLoading ? (
-                                <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            )}
-                        </button>
-                    </div>
-                </form>
+                {/* Input */}
+                <div className="mira-input-area">
+                    <form onSubmit={handleSend}>
+                        <div className="mira-input-row">
+                            <input
+                                className="mira-input"
+                                type="text"
+                                value={input}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+                                placeholder={isLoading ? 'Mira is with you…' : 'share what\'s on your mind…'}
+                                autoComplete="off"
+                                disabled={isLoading}
+                            />
+                            <button
+                                className="mira-send-btn"
+                                type="submit"
+                                disabled={!input.trim() || isLoading}
+                                title="Send"
+                            >
+                                {isLoading ? (
+                                    <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                                        <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                    </svg>
+                                ) : (
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12h14M12 5l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
-// --- Main Application Logic (App Component) ---
-
+// ─── App ─────────────────────────────────────────────────────────────────────
 const App: React.FC = () => {
     const [history, setHistory] = useState<Message[]>(() => [
         { role: 'system', content: INITIAL_SYSTEM_MESSAGE, isHidden: true, timestamp: 0 },
-        { role: 'model', content: INITIAL_GREETING, memeUrl: null, emotion: 'joy', timestamp: Date.now() }
+        { role: 'model', content: INITIAL_GREETING, memeUrl: null, emotion: 'joy', timestamp: Date.now() },
     ]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const addMessage = (newMessage: Message) => {
-        setHistory(prev => [...prev, newMessage]);
-    };
+    const addMessage = (msg: Message) => setHistory(prev => [...prev, msg]);
 
     const resetHistory = () => {
         setHistory([
             { role: 'system', content: INITIAL_SYSTEM_MESSAGE, isHidden: true, timestamp: 0 },
-            { role: 'model', content: "Chat reset! Ready when you are. What's new?", memeUrl: null, emotion: 'neutral', timestamp: Date.now() }
+            { role: 'model', content: "New chapter — I'm all yours. What's on your mind?", memeUrl: null, emotion: 'neutral', timestamp: Date.now() },
         ]);
         setError(null);
-        // Call the backend to reset the Flask session
-        fetch(API_RESET_URL, { method: 'POST' }).catch(e => console.error("Failed to reset backend session:", e));
+        fetch(API_RESET_URL, { method: 'POST' }).catch(e => console.error('Backend reset failed:', e));
     };
 
     const handleSendMessage = async (message: string) => {
         setError(null);
         setIsLoading(true);
-
-        // 1. Add user message to history immediately
         addMessage({ role: 'user', content: message, timestamp: Date.now() });
-
-        const payload = { message };
 
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
+                body: JSON.stringify({ message }),
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `Server responded with status ${response.status}`);
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || `Status ${response.status}`);
             }
 
             const data = await response.json();
-
-            // 2. Add model reply and meme URL to history
-            addMessage({
-                role: 'model',
-                content: data.reply,
-                memeUrl: data.meme_url,
-                emotion: data.emotion as Emotion,
-                timestamp: Date.now()
-            });
-
+            addMessage({ role: 'model', content: data.reply, memeUrl: data.meme_url, emotion: data.emotion as Emotion, timestamp: Date.now() });
         } catch (err) {
-            const errorMessage = `Oops! Couldn't reach Mira. Please make sure your Python server (on port 5000) is running and Ollama is available. Details: ${(err as Error).message}`;
-            console.error("API Fetch Error:", err);
-            setError(errorMessage);
-            // Add a temporary error message to history
-            addMessage({ role: 'model', content: "I'm having trouble connecting right now, but please know I'm listening. I'll try again soon! ❤️", memeUrl: null, emotion: 'sadness', timestamp: Date.now() });
+            const msg = `Couldn't reach Mira right now. Make sure the Python server on port 5000 is running. (${(err as Error).message})`;
+            setError(msg);
+            addMessage({ role: 'model', content: "I'm having a little trouble connecting, but I'm here. Try again in a moment? ❤️", memeUrl: null, emotion: 'sadness', timestamp: Date.now() });
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        // Render the ImageBot component, passing all necessary data and handlers
+      <>
+     
         <ImageBot
             onSendMessage={handleSendMessage}
             onResetChat={resetHistory}
             isLoading={isLoading}
             history={history}
             error={error}
-        />
+            />
+            </>
     );
 };
-const IB=App;
+
+const IB = App;
 export default IB;

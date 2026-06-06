@@ -1,6 +1,6 @@
-const chatBox = document.getElementById("chat-box");
+const chatBox  = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
+const sendBtn   = document.getElementById("send-btn");
 
 function addMessage(text, sender, memeUrl = null) {
     const msg = document.createElement("div");
@@ -18,12 +18,33 @@ function addMessage(text, sender, memeUrl = null) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function showTyping() {
+    const indicator = document.createElement("div");
+    indicator.classList.add("typing-indicator");
+    indicator.id = "typing";
+    indicator.innerHTML = "<span></span><span></span><span></span>";
+    chatBox.appendChild(indicator);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function hideTyping() {
+    const el = document.getElementById("typing");
+    if (el) el.remove();
+}
+
+function setLoading(state) {
+    sendBtn.disabled  = state;
+    userInput.disabled = state;
+}
+
 sendBtn.addEventListener("click", async () => {
     const message = userInput.value.trim();
     if (!message) return;
 
     addMessage(message, "user");
     userInput.value = "";
+    setLoading(true);
+    showTyping();
 
     const response = await fetch("/chat", {
         method: "POST",
@@ -32,7 +53,10 @@ sendBtn.addEventListener("click", async () => {
     });
 
     const data = await response.json();
+    hideTyping();
     addMessage(data.reply, "bot", data.meme_url);
+    setLoading(false);
+    userInput.focus();
 });
 
 userInput.addEventListener("keypress", (e) => {
