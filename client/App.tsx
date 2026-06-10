@@ -24,7 +24,10 @@ import About from "./pages/About";
 import ExplorePage from "./pages/ExplorePage";
 import Article from "./pages/Article";
 import Login from "./pages/Login"; // adjust path as needed
-
+import CounselorDashboard from "./pages/CounselorDashboard";
+import MeetingRoom from "./pages/MeetingRoom";
+import BookCounselorMeeting from "./pages/BookCounselorMeeting";
+import UserMeetings from "@/components/UserMeetings";
 // inside your <Routes>:
 const queryClient = new QueryClient();
 
@@ -48,6 +51,20 @@ const App = () => (
 
           {/* ── Protected routes ── */}
           <Route path="/article" element={<P><Article /></P>} />
+          <Route
+            path="/book-counselor"
+            element={<P><BookCounselorMeeting /></P>}
+          />
+         <Route path="/my-meetings" element={ <P><UserMeetings /></P> } />
+          <Route
+            path="/counselor-dashboard"
+            element={<P><CounselorDashboard /></P>}
+          />
+
+          <Route
+            path="/meeting/:meetLink"
+            element={<P><MeetingRoom /></P>}
+          />
           <Route path="/help" element={<P><Help /></P>} />
           <Route path="/Detox" element={<P><ThoughtDetox /></P>} />
           <Route path="/IB" element={<P><IB /></P>} />

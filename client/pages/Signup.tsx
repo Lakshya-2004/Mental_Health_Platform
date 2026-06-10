@@ -34,10 +34,16 @@ const row1: Img[] = [
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/a2c37a723acd151ae574e5ec76ffdcbfc329a1bf?width=412", ratio: "3/2" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/1cc908bb6104215c9ab3b8c07769d1120a491f45?width=438", ratio: "3/2" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/e6b1aef4ed6cfe8f54e6cbd1fd31c845d1c5a499?width=400", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a389986f25bf96997e7377bb8b1c90c9f9d771af?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/4295fc244013da75f23987cd555dc62ff24bb742?width=400", ratio: "3/2" },
+
 ];
 const row2: Img[] = [
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/8b73a26947eddaa97611edc55c3d09a78c3c35f2?width=354", ratio: "4/3" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/f234a7561db77825c7ef17996fcea49eadf52fa9?width=432", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a389986f25bf96997e7377bb8b1c90c9f9d771af?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/4295fc244013da75f23987cd555dc62ff24bb742?width=400", ratio: "3/2" },
+   { src: "https://api.builder.io/api/v1/image/assets/TEMP/e6b1aef4ed6cfe8f54e6cbd1fd31c845d1c5a499?width=400", ratio: "3/2" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/a389986f25bf96997e7377bb8b1c90c9f9d771af?width=338", ratio: "16/9" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/4295fc244013da75f23987cd555dc62ff24bb742?width=400", ratio: "3/2" },
 ];
@@ -45,8 +51,33 @@ const row3: Img[] = [
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/a4a4ae603794a848f6cdcfa9481452d95234fdea?width=400", ratio: "3/2" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/4717ac53571d3925daec07823c7b336e0c523ad0?width=432", ratio: "4/3" },
   { src: "https://api.builder.io/api/v1/image/assets/TEMP/b08fd0c396ed2556ed78c4017344871fa14926b8?width=400", ratio: "3/2" },
+   { src: "https://api.builder.io/api/v1/image/assets/TEMP/e6b1aef4ed6cfe8f54e6cbd1fd31c845d1c5a499?width=400", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a389986f25bf96997e7377bb8b1c90c9f9d771af?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/4295fc244013da75f23987cd555dc62ff24bb742?width=400", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/d1687c77cac552eab64c4fb076822eb6731b2890?width=450", ratio: "4/3" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/bfca34f3a322e60a0a5c87cca1e9b214806e9562?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a2c37a723acd151ae574e5ec76ffdcbfc329a1bf?width=412", ratio: "3/2" },
 ];
+const row4: Img[] = [
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/d1687c77cac552eab64c4fb076822eb6731b2890?width=450", ratio: "4/3" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/bfca34f3a322e60a0a5c87cca1e9b214806e9562?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a2c37a723acd151ae574e5ec76ffdcbfc329a1bf?width=412", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/1cc908bb6104215c9ab3b8c07769d1120a491f45?width=438", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/e6b1aef4ed6cfe8f54e6cbd1fd31c845d1c5a499?width=400", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a389986f25bf96997e7377bb8b1c90c9f9d771af?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/4295fc244013da75f23987cd555dc62ff24bb742?width=400", ratio: "3/2" },
 
+];
+const row5: Img[] = [
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/d1687c77cac552eab64c4fb076822eb6731b2890?width=450", ratio: "4/3" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/bfca34f3a322e60a0a5c87cca1e9b214806e9562?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a2c37a723acd151ae574e5ec76ffdcbfc329a1bf?width=412", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/1cc908bb6104215c9ab3b8c07769d1120a491f45?width=438", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/e6b1aef4ed6cfe8f54e6cbd1fd31c845d1c5a499?width=400", ratio: "3/2" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/a389986f25bf96997e7377bb8b1c90c9f9d771af?width=338", ratio: "16/9" },
+  { src: "https://api.builder.io/api/v1/image/assets/TEMP/4295fc244013da75f23987cd555dc62ff24bb742?width=400", ratio: "3/2" },
+
+];
 // ── Image row ──────────────────────────────────
 function ImageRow({ imgs, rowIdx = 0 }: { imgs: Img[]; rowIdx?: number }) {
   return (
@@ -57,8 +88,8 @@ function ImageRow({ imgs, rowIdx = 0 }: { imgs: Img[]; rowIdx?: number }) {
           custom={i + rowIdx}
           variants={imgFade} initial="hidden" whileInView="show"
           viewport={{ once: true, amount: 0.1 }}
-          className="object-cover rounded-3xl flex-shrink-0 h-28 md:h-36 opacity-50"
-          style={{ aspectRatio: img.ratio }}
+          className="object-cover rounded-2xl flex-shrink-0 h-28 md:h-36"
+          style={{ aspectRatio: img.ratio, opacity: 0.35, filter: "saturate(0.6) brightness(0.85)" }}
         />
       ))}
     </div>
@@ -70,22 +101,46 @@ function Field({
   label, icon, error, ...props
 }: { label: string; icon: React.ReactNode; error?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <motion.div variants={fadeUp} className="flex flex-col gap-1">
-      <label className="text-xs font-semibold text-[#3D6B44] uppercase tracking-wider pl-1">
+    <motion.div variants={fadeUp} className="flex flex-col gap-1.5">
+      <label
+        className="text-[10px] font-semibold uppercase tracking-[0.15em] pl-0.5"
+        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+      >
         {label}
       </label>
       <div className="relative">
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7BC47F]">{icon}</span>
+        <span
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ color: "#8a9a5b" }}
+        >
+          {icon}
+        </span>
         <input
           {...props}
-          className={`w-full h-11 pl-10 pr-4 rounded-xl border text-sm transition-all duration-200
-            bg-white/70 text-gray-800 placeholder:text-gray-400
-            focus:outline-none focus:ring-2 focus:ring-[#7BC47F]/40 focus:border-[#7BC47F]
-            ${error ? "border-red-400 bg-red-50/50" : "border-[#C8E6CA]"}
-          `}
+          className="w-full h-11 pl-10 pr-4 rounded-xl text-sm transition-all duration-200 outline-none"
+          style={{
+            background: "rgba(232,236,206,0.25)",
+            border: error ? "1.5px solid #d4a090" : "1.5px solid rgba(138,154,91,0.35)",
+            color: "#2e3a1f",
+            fontFamily: "'DM Sans', sans-serif",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "#8a9a5b";
+            e.target.style.boxShadow = "0 0 0 3px rgba(138,154,91,0.18)";
+            e.target.style.background = "rgba(255,255,255,0.85)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = error ? "#d4a090" : "rgba(138,154,91,0.35)";
+            e.target.style.boxShadow = "none";
+            e.target.style.background = "rgba(232,236,206,0.25)";
+          }}
         />
       </div>
-      {error && <p className="text-xs text-red-500 pl-1">{error}</p>}
+      {error && (
+        <p className="text-xs pl-0.5" style={{ color: "#c0634f", fontFamily: "'DM Sans', sans-serif" }}>
+          {error}
+        </p>
+      )}
     </motion.div>
   );
 }
@@ -94,27 +149,56 @@ function SelectField({
   label, icon, children, value, onChange, error,
 }: { label: string; icon: React.ReactNode; children: React.ReactNode; value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void; error?: string }) {
   return (
-    <motion.div variants={fadeUp} className="flex flex-col gap-1">
-      <label className="text-xs font-semibold text-[#3D6B44] uppercase tracking-wider pl-1">
+    <motion.div variants={fadeUp} className="flex flex-col gap-1.5">
+      <label
+        className="text-[10px] font-semibold uppercase tracking-[0.15em] pl-0.5"
+        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+      >
         {label}
       </label>
       <div className="relative">
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7BC47F]">{icon}</span>
+        <span
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ color: "#8a9a5b" }}
+        >
+          {icon}
+        </span>
         <select
           value={value} onChange={onChange}
-          className={`w-full h-11 pl-10 pr-4 rounded-xl border text-sm appearance-none
-            bg-white/70 text-gray-800 transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-[#7BC47F]/40 focus:border-[#7BC47F]
-            ${error ? "border-red-400" : "border-[#C8E6CA]"}
-          `}
+          className="w-full h-11 pl-10 pr-8 rounded-xl text-sm appearance-none transition-all duration-200 outline-none"
+          style={{
+            background: "rgba(232,236,206,0.25)",
+            border: error ? "1.5px solid #d4a090" : "1.5px solid rgba(138,154,91,0.35)",
+            color: "#2e3a1f",
+            fontFamily: "'DM Sans', sans-serif",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "#8a9a5b";
+            e.target.style.boxShadow = "0 0 0 3px rgba(138,154,91,0.18)";
+            e.target.style.background = "rgba(255,255,255,0.85)";
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = error ? "#d4a090" : "rgba(138,154,91,0.35)";
+            e.target.style.boxShadow = "none";
+            e.target.style.background = "rgba(232,236,206,0.25)";
+          }}
         >
           {children}
         </select>
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7BC47F] pointer-events-none">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        <span
+          className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ color: "#8a9a5b" }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
         </span>
       </div>
-      {error && <p className="text-xs text-red-500 pl-1">{error}</p>}
+      {error && (
+        <p className="text-xs pl-0.5" style={{ color: "#c0634f", fontFamily: "'DM Sans', sans-serif" }}>
+          {error}
+        </p>
+      )}
     </motion.div>
   );
 }
@@ -124,9 +208,15 @@ function StepDots({ step, total }: { step: number; total: number }) {
   return (
     <div className="flex items-center justify-center gap-2 mb-5">
       {Array.from({ length: total }).map((_, i) => (
-        <div key={i} className={`rounded-full transition-all duration-300 ${
-          i === step ? "w-6 h-2 bg-[#4CAF50]" : i < step ? "w-2 h-2 bg-[#7BC47F]" : "w-2 h-2 bg-[#C8E6CA]"
-        }`} />
+        <div
+          key={i}
+          className="rounded-full transition-all duration-500"
+          style={{
+            width: i === step ? "28px" : "8px",
+            height: "8px",
+            background: i === step ? "#4b5320" : i < step ? "#8a9a5b" : "rgba(138,154,91,0.25)",
+          }}
+        />
       ))}
     </div>
   );
@@ -231,11 +321,19 @@ const Signup = () => {
     }
   };
 
+  const stepLabels = ["Personal Info", "Academic Info", "Your Credentials"];
+
   // ── Step content ──────────────────────────
   const steps = [
     // Step 0 — Personal info
     <motion.div key="s0" variants={stagger} initial="hidden" animate="show" exit="exit" className="flex flex-col gap-4">
-      <motion.p variants={fadeUp} className="text-sm text-[#5A7D5E] mb-1">Let's start with the basics</motion.p>
+      <motion.p
+        variants={fadeUp}
+        className="text-sm mb-1"
+        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+      >
+        Let's start with the basics
+      </motion.p>
       <Field label="Full Name" icon={icons.user} type="text" value={form.name} onChange={set("name")} placeholder="Your full name" error={errors.name} required />
       <Field label="Age" icon={icons.age} type="number" value={form.age} onChange={set("age")} placeholder="e.g. 20" min={10} max={100} error={errors.age} required />
       <SelectField label="Role" icon={icons.role} value={form.role} onChange={set("role")} error={errors.role}>
@@ -246,7 +344,13 @@ const Signup = () => {
 
     // Step 1 — Academic info
     <motion.div key="s1" variants={stagger} initial="hidden" animate="show" exit="exit" className="flex flex-col gap-4">
-      <motion.p variants={fadeUp} className="text-sm text-[#5A7D5E] mb-1">Tell us about your studies</motion.p>
+      <motion.p
+        variants={fadeUp}
+        className="text-sm mb-1"
+        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+      >
+        Tell us about your studies
+      </motion.p>
       <SelectField label="Year of Study" icon={icons.year} value={form.year} onChange={set("year")} error={errors.year}>
         <option value="">Select year</option>
         <option value="1">1st Year</option>
@@ -259,7 +363,13 @@ const Signup = () => {
 
     // Step 2 — Credentials
     <motion.div key="s2" variants={stagger} initial="hidden" animate="show" exit="exit" className="flex flex-col gap-4">
-      <motion.p variants={fadeUp} className="text-sm text-[#5A7D5E] mb-1">Almost there — secure your account</motion.p>
+      <motion.p
+        variants={fadeUp}
+        className="text-sm mb-1"
+        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+      >
+        Almost there — secure your account
+      </motion.p>
       <Field label="Email" icon={icons.email} type="email" value={form.email} onChange={set("email")} placeholder="you@college.edu" error={errors.email} required />
       <Field label="Password" icon={icons.password} type="password" value={form.password} onChange={set("password")} placeholder="At least 6 characters" error={errors.password} required />
 
@@ -267,31 +377,39 @@ const Signup = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-11 rounded-xl bg-[#4CAF50] hover:bg-[#43A047] disabled:opacity-60
-            text-white text-sm font-semibold tracking-wide transition-all duration-200
-            shadow-[0_4px_14px_rgba(76,175,80,0.35)] hover:shadow-[0_6px_20px_rgba(76,175,80,0.45)]
-            flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-[0.98]"
+          style={{
+            background: "linear-gradient(135deg, #4b5320 0%, #6b7a30 100%)",
+            color: "#e8ecce",
+            fontFamily: "'DM Sans', sans-serif",
+            boxShadow: "0 4px 16px rgba(75,83,32,0.35)",
+          }}
         >
           {loading ? (
             <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
             </svg>
-          ) : "Create Account →"}
+          ) : "Create account →"}
         </button>
       </motion.div>
 
       <motion.div variants={fadeUp} className="relative flex items-center gap-3">
-        <div className="flex-1 h-px bg-[#C8E6CA]" />
-        <span className="text-xs text-[#7BC47F] font-medium">or</span>
-        <div className="flex-1 h-px bg-[#C8E6CA]" />
+        <div className="flex-1 h-px" style={{ background: "rgba(138,154,91,0.25)" }} />
+        <span className="text-xs font-medium" style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}>or</span>
+        <div className="flex-1 h-px" style={{ background: "rgba(138,154,91,0.25)" }} />
       </motion.div>
 
       <motion.div variants={fadeUp}>
         <button
           type="button" onClick={handleGoogle} disabled={loading}
-          className="w-full h-11 rounded-xl border border-[#C8E6CA] bg-white/80 hover:bg-white
-            text-gray-700 text-sm font-medium transition-all duration-200
-            flex items-center justify-center gap-2.5 shadow-sm hover:shadow"
+          className="w-full h-11 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2.5 disabled:opacity-60 hover:shadow-md active:scale-[0.98]"
+          style={{
+            background: "rgba(255,255,255,0.9)",
+            border: "1.5px solid rgba(138,154,91,0.3)",
+            color: "#2e3a1f",
+            fontFamily: "'DM Sans', sans-serif",
+            boxShadow: "0 1px 4px rgba(75,83,32,0.08)",
+          }}
         >
           {icons.google} Continue with Google
         </button>
@@ -300,52 +418,121 @@ const Signup = () => {
   ];
 
   return (
-    <section className="relative h-screen overflow-hidden bg-gradient-to-br from-[#FFFDF7] via-[#F4FAF5] to-[#EAF7EE]">
+    <section
+      className="relative h-screen overflow-hidden"
+      style={{ background: "linear-gradient(135deg, #2a3010 0%, #3a4520 40%, #1e2810 100%)" }}
+    >
+      {/* Font import */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
+      `}</style>
 
       {/* ── Background images ── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <ImageRow imgs={row1} rowIdx={0} />
-        <ImageRow imgs={row2} rowIdx={10} />
-        <ImageRow imgs={row3} rowIdx={20} />
-      </div>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+  <ImageRow imgs={row1} rowIdx={0} />
+  <ImageRow imgs={row2} rowIdx={10} />
+  <ImageRow imgs={row3} rowIdx={20} />
+  <ImageRow imgs={row4} rowIdx={30} />
+  <ImageRow imgs={row5} rowIdx={40} />
+</div>
 
-      {/* ── Overlay ── */}
-      <div className="absolute inset-0 bg-black/50 z-10" />
+      {/* ── Deep olive overlay ── */}
+      <div
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(160deg, rgba(30,40,10,0.82) 0%, rgba(42,56,18,0.78) 100%)" }}
+      />
 
-      {/* ── Glow ── */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full bg-[#A7D7A9] blur-[130px] opacity-25 z-10 pointer-events-none" />
+      {/* ── Ambient glow ── */}
+      <div
+        className="absolute z-10 pointer-events-none rounded-full"
+        style={{
+          top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "520px", height: "520px",
+          background: "radial-gradient(circle, rgba(138,154,91,0.18) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+
+      {/* ── Second accent glow top-right ── */}
+      <div
+        className="absolute z-10 pointer-events-none rounded-full"
+        style={{
+          top: "-80px", right: "-80px",
+          width: "320px", height: "320px",
+          background: "radial-gradient(circle, rgba(232,236,206,0.07) 0%, transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
 
       {/* ── Form ── */}
       <div className="relative z-20 h-screen flex items-center justify-center px-4 py-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96, y: 20 }}
+          initial={{ opacity: 0, scale: 0.95, y: 24 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-md"
         >
-          <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-7 shadow-2xl border border-white/60">
-
+          {/* Card */}
+          <div
+            className="rounded-3xl p-7 backdrop-blur-2xl"
+            style={{
+              background: "rgba(245,247,238,0.92)",
+              border: "1px solid rgba(232,236,206,0.6)",
+              boxShadow: "0 24px 64px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.5) inset",
+            }}
+          >
             {/* Header */}
             <div className="text-center mb-5">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7BC47F] to-[#4CAF50] mb-3 shadow-lg">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              {/* Logo mark */}
+              <div
+                className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-3"
+                style={{
+                  background: "linear-gradient(135deg, #4b5320 0%, #6b7a30 100%)",
+                  boxShadow: "0 6px 20px rgba(75,83,32,0.4)",
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8ecce" strokeWidth="2.5">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
                   <path d="M8 14s1.5 2 4 2 4-2 4-2" strokeLinecap="round"/>
                   <line x1="9" y1="9" x2="9.01" y2="9" strokeWidth="3" strokeLinecap="round"/>
                   <line x1="15" y1="9" x2="15.01" y2="9" strokeWidth="3" strokeLinecap="round"/>
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-[#2F6B3B] tracking-tight">Join Beacon</h1>
-              <p className="text-sm text-[#6B8F6E] mt-1">Your wellness journey starts here</p>
+
+              <h1
+                className="text-2xl font-semibold tracking-tight"
+                style={{ color: "#2e3a1f", fontFamily: "'Lora', serif" }}
+              >
+                Join Beacon
+              </h1>
+              <p
+                className="text-sm mt-1"
+                style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Your wellness journey starts here
+              </p>
             </div>
 
             {/* Step dots */}
             <StepDots step={step} total={3} />
 
             {/* Step label */}
-            <p className="text-center text-xs font-semibold text-[#7BC47F] uppercase tracking-widest mb-4">
-              Step {step + 1} of 3 — {["Personal Info", "Academic Info", "Your Credentials"][step]}
-            </p>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span
+                className="text-[10px] font-semibold uppercase tracking-[0.15em]"
+                style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Step {step + 1} of 3
+              </span>
+              <span style={{ color: "rgba(138,154,91,0.4)" }}>·</span>
+              <span
+                className="text-[10px] font-semibold uppercase tracking-[0.15em]"
+                style={{ color: "#4b5320", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                {stepLabels[step]}
+              </span>
+            </div>
 
             {/* Steps */}
             <form onSubmit={handleSignup}>
@@ -358,32 +545,54 @@ const Signup = () => {
                 {step > 0 && (
                   <button
                     type="button" onClick={back}
-                    className="flex items-center gap-1.5 px-4 h-10 rounded-xl border border-[#C8E6CA]
-                      text-sm text-[#4A7A50] font-medium hover:bg-[#F0FAF1] transition-all"
+                    className="flex items-center gap-1.5 px-4 h-10 rounded-xl text-sm font-medium transition-all duration-150 hover:opacity-80 active:scale-95"
+                    style={{
+                      border: "1.5px solid rgba(138,154,91,0.4)",
+                      color: "#4b5320",
+                      background: "transparent",
+                      fontFamily: "'DM Sans', sans-serif",
+                    }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
                     Back
                   </button>
                 )}
                 {step < 2 && (
                   <button
                     type="button" onClick={next}
-                    className="flex items-center gap-1.5 px-5 h-10 rounded-xl bg-[#4CAF50] hover:bg-[#43A047]
-                      text-sm text-white font-semibold transition-all shadow-[0_3px_10px_rgba(76,175,80,0.3)]"
+                    className="flex items-center gap-1.5 px-5 h-10 rounded-xl text-sm font-semibold transition-all duration-150 hover:opacity-90 active:scale-95"
+                    style={{
+                      background: "linear-gradient(135deg, #4b5320 0%, #6b7a30 100%)",
+                      color: "#e8ecce",
+                      fontFamily: "'DM Sans', sans-serif",
+                      boxShadow: "0 3px 12px rgba(75,83,32,0.3)",
+                    }}
                   >
                     Continue
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
                   </button>
                 )}
               </div>
             </form>
 
             {/* Footer link */}
-            <p className="text-center text-sm text-[#7A8F7B] mt-5">
+            <p
+              className="text-center text-sm mt-5"
+              style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+            >
               Already have an account?{" "}
-              <a href="/login" className="text-[#2F6B3B] font-semibold hover:underline">Sign in</a>
+              
+               <a href="/login"
+                className="font-semibold hover:underline underline-offset-2"
+                style={{ color: "#4b5320" }}
+              >
+                Sign in
+              </a>
             </p>
-
           </div>
         </motion.div>
       </div>

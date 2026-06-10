@@ -1,14 +1,13 @@
 import path from "path";
-import { fileURLToPath } from "url";
+
 import { createServer } from "./index";
 import * as express from "express";
 
+const __dirname = path.resolve();
 const app = createServer();
 const port = process.env.PORT || 3000;
 
-// ESM-safe __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // SPA build path
 const distPath = path.join(__dirname, "../spa");

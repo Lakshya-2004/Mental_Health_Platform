@@ -9,6 +9,8 @@ import { auth, db } from "@/firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import HeroSection from "./HeroSection";
 import { Link } from "react-router-dom";
+import FAQSection from "@/components/Faqsection";
+import StressCategoriesSection from "@/components/Stresscategoriessection";
 
 const tokens = {
   sage: "#5B8C6E",
@@ -370,7 +372,7 @@ function LandingContent() {
       </section>
 
       {/* ── Stress categories ── */}
-      <section style={{ padding: "80px 32px", background: "var(--warm)", borderRadius: 52, margin: "8px 16px" }}>
+      {/* <section style={{ padding: "80px 32px", background: "var(--warm)", borderRadius: 52, margin: "8px 16px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <p className="section-eyebrow" style={{ textAlign: "center" }}>Understand your needs</p>
           <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(28px,4.5vw,52px)", textAlign: "center", marginBottom: 16, lineHeight: 1.2 }}>Types &amp; Categories of Mental Stress</h2>
@@ -385,7 +387,9 @@ function LandingContent() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
+
+      <StressCategoriesSection/>
 
       {/* ── All features ── */}
       <section style={{ padding: "80px 32px" }}>
@@ -419,7 +423,7 @@ function LandingContent() {
             From expert-guided therapy to AI-powered sessions, soothing meditations to personalised song recommendations — connect peer-to-peer with experts and much more.
           </p>
           <div className="w-full flex flex-col items-center gap-2">
-            <NavLink to="/login"><button className="cta-btn">Get Started</button></NavLink>
+            <NavLink to="/explore"><button className="cta-btn">Get Started</button></NavLink>
             <NavLink to="/about" className="text-sm text-gray-500 underline hover:text-[#2F6B3B] transition-colors">Click to learn more</NavLink>
           </div>
         </div>
@@ -479,25 +483,80 @@ function LandingContent() {
       </section>
 
       {/* ── FAQ ── */}
-      <section style={{ padding: "80px 32px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <p className="section-eyebrow" style={{ textAlign: "center" }}>Got questions?</p>
-          <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(26px,4vw,48px)", textAlign: "center", marginBottom: 48, lineHeight: 1.25 }}>
-            Frequently Asked Questions About <span style={{ color: "var(--sage)", fontStyle: "italic" }}>Beacon</span>
-          </h2>
-          <div style={{ background: "#fff", border: "1.5px solid rgba(91,140,110,0.15)", borderRadius: 32, padding: "8px 40px 8px", boxShadow: "var(--shadow)" }}>
-            {["What is Beacon for?", "What is the objective of Beacon?", "What major steps is Beacon taking?", "What is the cost for Beacon features?", "Will Beacon really help me improve stress?", "Is Beacon really that effective?", "Can I get Beacon features for free?"].map((q) => (
-              <div key={q} className="faq-item">{q}</div>
-            ))}
-          </div>
-          <div style={{ textAlign: "center", marginTop: 48, font: "bolder", fontSize: "larger" }}><h1>Join Us Today</h1></div>
-        </div>
-      </section>
+               
+      <FAQSection/>
+     
+     <section
+  style={{
+    padding: 0,
+    position: "relative",
+    overflow: "hidden",
+    borderRadius: "24px",
+    margin: "0 24px 40px",
+    boxShadow: "0 24px 64px rgba(75, 83, 32, 0.18)",
+  }}
+>
+  {/* Image */}
+  <img
+    src="https://plus.unsplash.com/premium_photo-1733306436096-080018552c70?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    alt="Final banner"
+    style={{
+      width: "100%",
+      height: "420px",
+      objectFit: "cover",
+      objectPosition: "center 30%",
+      display: "block",
+      filter: "brightness(0.82) saturate(1.1)",
+    }}
+  />
 
-      {/* ── Final banner ── */}
-      <section style={{ padding: 0 }}>
-        <img src="./img.png" alt="Final banner" style={{ width: "100%", height: "auto", objectFit: "cover", display: "block" }} />
-      </section>
+  {/* Olive gradient overlay */}
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background:
+        "linear-gradient(to top, rgba(75,83,32,0.72) 0%, rgba(75,83,32,0.18) 50%, transparent 100%)",
+      pointerEvents: "none",
+    }}
+  />
+
+  {/* Text overlay */}
+  <div
+    style={{
+      position: "absolute",
+      bottom: "36px",
+      left: "40px",
+      right: "40px",
+    }}
+  >
+    <p
+      style={{
+        margin: 0,
+        fontSize: "13px",
+        fontWeight: 600,
+        letterSpacing: "4px",
+        textTransform: "uppercase",
+        color: "#e8ecce",
+        marginBottom: "8px",
+      }}
+    >
+      Beacon · Mental Wellness
+    </p>
+    <h2
+      style={{
+        margin: 0,
+        fontSize: "clamp(22px, 4vw, 36px)",
+        fontWeight: 700,
+        color: "#ffffff",
+        lineHeight: 1.25,
+        textShadow: "0 2px 12px rgba(0,0,0,0.25)",
+      }}
+    >
+      Your journey to well-being starts here.
+    </h2>
+  </div>
+</section>
 
       {/* ── Footer ── */}
       <footer style={{ background: "var(--charcoal)", padding: "48px 32px" }}>

@@ -7,6 +7,7 @@
 ─────────────────────────────────────────────────────────────────── */
 
 import { motion, Variants } from "framer-motion";
+import { NavLink } from "react-router-dom";
 import ExplorePage from "./ExplorePage";
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -440,7 +441,7 @@ export default function HeroSection() {
               className="hero-cta-row"
               custom={4} variants={fadeUp} initial="hidden" animate="show"
             >
-              <a href="/chatbot" className="hero-btn-main">
+              <a href="/book-counselor" className="hero-btn-main">
                 Talk to an Expert
               </a>
               <a href="/explore" className="hero-btn-secondary">
@@ -491,7 +492,35 @@ export default function HeroSection() {
               </div>
               <div className="hero-session-name">Dr. Priya Sharma</div>
               <div className="hero-session-sub">Anxiety & Stress · Available now</div>
-              <button className="hero-session-btn">Book a Session</button>
+             <NavLink
+  to="/my-meetings"
+  style={{
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "12px 28px",
+    borderRadius: "12px",
+    background: "linear-gradient(135deg, #5B8C6E 0%, #287a3f 100%)",
+    color: "#e8ecce",
+    fontFamily: "'DM Sans', sans-serif",
+    fontSize: "14px",
+    fontWeight: 600,
+    letterSpacing: "0.02em",
+    textDecoration: "none",
+    boxShadow: "0 4px 16px rgba(75,83,32,0.35)",
+    transition: "opacity 0.15s ease, transform 0.15s ease",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.opacity = "0.88";
+    e.currentTarget.style.transform = "translateY(-1px)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.opacity = "1";
+    e.currentTarget.style.transform = "translateY(0)";
+  }}
+>
+  Book a Session →
+</NavLink>
             </div>
           </motion.div>
 
