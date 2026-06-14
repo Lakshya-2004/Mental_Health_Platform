@@ -8,7 +8,7 @@
 
 import { motion, Variants } from "framer-motion";
 import { NavLink } from "react-router-dom";
-import ExplorePage from "./ExplorePage";
+
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   show: (i = 0) => ({
@@ -490,7 +490,7 @@ export default function HeroSection() {
                 <div className="hero-session-dot" />
                 <span className="hero-session-label">Live Session</span>
               </div>
-              <div className="hero-session-name">Dr. Priya Sharma</div>
+              <div className="hero-session-name">Dr.Trust </div>
               <div className="hero-session-sub">Anxiety & Stress · Available now</div>
              <NavLink
   to="/my-meetings"
@@ -519,7 +519,7 @@ export default function HeroSection() {
     e.currentTarget.style.transform = "translateY(0)";
   }}
 >
-  Book a Session →
+  Booked Sessions →
 </NavLink>
             </div>
           </motion.div>

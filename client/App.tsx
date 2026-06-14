@@ -28,6 +28,14 @@ import CounselorDashboard from "./pages/CounselorDashboard";
 import MeetingRoom from "./pages/MeetingRoom";
 import BookCounselorMeeting from "./pages/BookCounselorMeeting";
 import UserMeetings from "@/components/UserMeetings";
+import CounsellorRoute from "./components/CounsellorRoute";
+import PendingApproval from "./components/PendingApproval";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminRoute from "@/components/AdminRoute";
+import RejectedPage from "./pages/RejectedPage";
+
+
+
 // inside your <Routes>:
 const queryClient = new QueryClient();
 
@@ -48,19 +56,37 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/login" element={<Login />} />
-
+          <Route
+            path="/rejected"
+            element={<RejectedPage />}
+          />
           {/* ── Protected routes ── */}
           <Route path="/article" element={<P><Article /></P>} />
           <Route
             path="/book-counselor"
             element={<P><BookCounselorMeeting /></P>}
           />
-         <Route path="/my-meetings" element={ <P><UserMeetings /></P> } />
+          <Route path="/my-meetings" element={<P><UserMeetings /></P>} />
           <Route
-            path="/counselor-dashboard"
-            element={<P><CounselorDashboard /></P>}
+            path="/counsellor"
+            element={
+              <CounsellorRoute>
+                <CounselorDashboard />
+              </CounsellorRoute>
+            }
           />
-
+          <Route
+            path="/pending-approval"
+            element={<PendingApproval />}
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
           <Route
             path="/meeting/:meetLink"
             element={<P><MeetingRoom /></P>}

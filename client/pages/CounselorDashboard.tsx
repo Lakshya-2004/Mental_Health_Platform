@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 interface MeetingRequest {
   _id: string;
   userId: string;
@@ -14,11 +17,67 @@ interface MeetingRequest {
 const CounselorDashboard = () => {
   const [requests, setRequests] = useState<MeetingRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+const [authChecking, setAuthChecking] = useState(true);
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    try {
+      if (!user) {
+        navigate("/login");
+        return;
+      }
 
-  useEffect(() => {
-    fetchRequests();
-  }, []);
+      console.log("Logged In UID:", user.uid);
 
+      const snap = await getDoc(doc(db, "users", user.uid));
+
+      if (!snap.exists()) {
+        navigate("/login");
+        return;
+      }
+
+      const data = snap.data();
+
+      const role = data.role || "student";
+      const status = data.verificationStatus || "pending";
+
+      console.log("Role:", role);
+      console.log("Verification:", status);
+      console.log("Firestore User Data:", data);
+
+      // 🔥 ONLY COUNSELLOR RESTRICTION LOGIC
+      if (role === "counsellor") {
+        if (status === "pending") {
+          navigate("/pending-approval");
+          return;
+        }
+
+        if (status === "rejected") {
+          navigate("/");
+          return;
+        }
+
+        if (status !== "approved") {
+          navigate("/");
+          return;
+        }
+      }
+
+      // ✅ ALLOWED TO ENTER DASHBOARD
+      fetchRequests();
+    } catch (err) {
+      console.error(err);
+      navigate("/login");
+    } finally {
+      setAuthChecking(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, [navigate]);
+
+ 
+  
   const fetchRequests = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/meetings");
@@ -85,7 +144,13 @@ const CounselorDashboard = () => {
       style: "bg-[#fdf8ec] text-[#7a6022] border border-[#d4bc78]",
     },
   };
-
+if (authChecking) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      Checking access...
+    </div>
+  );
+}
   return (
     <div
       className="min-h-screen p-6 md:p-12"
@@ -165,7 +230,8 @@ const CounselorDashboard = () => {
           /* Request Cards */
           <div className="flex flex-col gap-4">
             {requests.map((request) => {
-              const status = statusConfig[request.status] ?? {
+              const statusKey = request.status?.toLowerCase();
+              const status = statusConfig[statusKey] ?? {
                 label: request.status,
                 style: "bg-gray-100 text-gray-600 border border-gray-300",
               };

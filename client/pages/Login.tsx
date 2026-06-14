@@ -16,11 +16,46 @@ export default function Login() {
     try {
       const userRef = doc(db, "users", uid);
       const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) { alert("User not registered in Firestore!"); return; }
-      const role = userSnap.data().role;
-      if (role === "student") navigate("/");
-      else if (role === "counselor") navigate("/counselor");
-      else alert("Role not assigned. Contact admin.");
+
+      if (!userSnap.exists()) {
+        alert("User not registered in Firestore!");
+        return;
+      }
+
+      const data = userSnap.data();
+      const role = data.role;
+      
+
+      const verificationStatus = data.verificationStatus;
+
+      localStorage.setItem("role", role);
+      localStorage.setItem(
+        "verificationStatus",
+        verificationStatus || ""
+      );
+      if (role === "admin") {
+        navigate("/admin");
+      }
+      else if (role === "student") {
+        navigate("/");
+      }
+      else if (role === "counsellor") {
+
+        if (verificationStatus === "approved") {
+          navigate("/counsellor");
+        }
+        else if (verificationStatus === "rejected") {
+          navigate("/rejected");
+        }
+        else {
+          navigate("/pending-approval");
+        }
+
+      }
+      else {
+        alert("Role not assigned.");
+      }
+
     } catch (error) {
       console.error(error);
       alert("Failed to fetch user role.");

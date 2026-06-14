@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { auth, db, googleProvider } from "../firebase/firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-
+import type { VerificationStatus } from "@/types/user";
+// import { doc, setDoc } from "firebase/firestore";
+ import { doc, setDoc, getDoc } from "firebase/firestore";
+ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+ import { useNavigate } from "react-router-dom";
 // ── Types ──────────────────────────────────────
 type Img = { src: string; ratio: string };
 
@@ -25,6 +28,16 @@ const imgFade: Variants = {
     opacity: 1, y: 0,
     transition: { delay: i * 0.05, duration: 0.7, ease: "easeOut" },
   }),
+};
+const storage = getStorage();
+const uploadDocument = async (file: File, uid: string) => {
+  const storageRef = ref(storage, `counsellor-docs/${uid}/${file.name}`);
+
+  await uploadBytes(storageRef, file);
+
+  const url = await getDownloadURL(storageRef);
+
+  return url;
 };
 
 // ── Image data ─────────────────────────────────
@@ -248,37 +261,79 @@ const Signup = () => {
   const [step, setStep]       = useState(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors]   = useState<Record<string, string>>({});
-
+const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "", age: "", role: "student",
-    year: "", branch: "", email: "", password: "",
-  });
+  name: "",
+  age: "",
+  role: "student",
+  year: "",
+  branch: "",
+  email: "",
+  password: "",
 
-  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  // counsellor fields
+  qualification: "",
+  experience: "",
+  document: null as File | null,
+});
+const isCounsellor = form.role === "counsellor";
+  const isStudent = form.role === "student";
+useEffect(() => {
+  setForm(prev => ({
+    ...prev,
+    year: prev.role === "student" ? prev.year : "",
+    branch: prev.role === "student" ? prev.branch : "",
+    qualification: prev.role === "counsellor" ? prev.qualification : "",
+    experience: prev.role === "counsellor" ? prev.experience : "",
+    document: prev.role === "counsellor" ? prev.document : null,
+  }));
+}, [form.role]);
+ const set = (k: keyof typeof form) =>
+  (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
 
   // ── Validation ────────────────────────────
   const validateStep = () => {
-    const e: Record<string, string> = {};
-    if (step === 0) {
-      if (!form.name.trim())   e.name   = "Name is required";
-      if (!form.age || +form.age < 10 || +form.age > 100) e.age = "Enter a valid age";
-      if (!form.role)          e.role   = "Select a role";
-    }
-    if (step === 1) {
-      if (!form.year)          e.year   = "Select your year";
-      if (!form.branch.trim()) e.branch = "Branch is required";
-    }
-    if (step === 2) {
-      if (!form.email.includes("@")) e.email = "Enter a valid email";
-      if (form.password.length < 6)  e.password = "Password must be at least 6 characters";
-    }
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
+  const e: Record<string, string> = {};
 
-  const next = () => { if (validateStep()) setStep(s => s + 1); };
-  const back = () => { setErrors({}); setStep(s => s - 1); };
+  if (step === 0) {
+    if (!form.name.trim()) e.name = "Name is required";
+    if (!form.age || +form.age < 10 || +form.age > 100)
+      e.age = "Enter a valid age";
+    if (!form.role) e.role = "Select a role";
+  }
+
+  if (step === 1) {
+  if (form.role === "student") {
+    if (!form.year) e.year = "Select your year";
+    if (!form.branch.trim()) e.branch = "Branch is required";
+  }
+
+  if (form.role === "counsellor") {
+    if (!form.qualification?.trim()) e.qualification = "Qualification required";
+    if (!form.experience?.trim()) e.experience = "Experience required";
+  }
+}
+
+  if (step === 2) {
+    if (!form.email.includes("@")) e.email = "Enter a valid email";
+    if (form.password.length < 6)
+      e.password = "Password must be at least 6 characters";
+  }
+
+  setErrors(e);
+  return Object.keys(e).length === 0;
+};
+
+  const next = () => {
+  if (!validateStep()) return;
+
+  setStep((s) => Math.min(s + 1, 2));
+};
+const back = () => {
+  setErrors({});
+  setStep((s) => Math.max(s - 1, 0));
+};
 
   // ── Email signup ──────────────────────────
   const handleSignup = async (e: React.FormEvent) => {
@@ -286,80 +341,274 @@ const Signup = () => {
     if (!validateStep()) return;
     setLoading(true);
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      await setDoc(doc(db, "users", user.uid), {
-        name: form.name, age: form.age, role: form.role,
-        year: form.year, branch: form.branch,
-        email: user.email, photoURL: null,
-        anonymousUsername: generateAnonymousUsername(),
-        createdAt: new Date(),
-      });
-      window.location.href = "/";
+ const { user } = await createUserWithEmailAndPassword(
+  auth,
+  form.email,
+  form.password
+);
+
+let documentURL = null;
+
+if (form.role === "counsellor" && form.document) {
+  documentURL = await uploadDocument(form.document, user.uid);
+}
+
+await setDoc(doc(db, "users", user.uid), {
+  name: form.name,
+  age: form.age,
+  email: user.email,
+  role: form.role,
+
+  year: form.year,
+  branch: form.branch,
+
+  qualification: form.role === "counsellor" ? form.qualification : null,
+  experience: form.role === "counsellor" ? form.experience : null,
+
+  documentURL, // ✅ now real uploaded file URL
+
+  anonymousUsername: generateAnonymousUsername(),
+  createdAt: new Date(),
+
+  verificationStatus:
+    form.role === "counsellor"
+      ? ("pending" as VerificationStatus)
+      : ("not_required" as VerificationStatus),
+});
+     if (form.role === "counsellor") {
+  navigate("/pending-approval", { replace: true });
+} else {
+  navigate("/", { replace: true });
+}
     } catch (err: any) {
-      setErrors({ email: err.message });
+     setErrors({ password: err.message });
     } finally {
       setLoading(false);
     }
   };
 
   // ── Google signup ─────────────────────────
-  const handleGoogle = async () => {
-    setLoading(true);
-    try {
-      const { user } = await signInWithPopup(auth, googleProvider);
-      await setDoc(doc(db, "users", user.uid), {
-        name: user.displayName, email: user.email,
-        photoURL: user.photoURL, role: "student",
-        anonymousUsername: generateAnonymousUsername(),
-        createdAt: new Date(),
-      }, { merge: true });
-      window.location.href = "/";
-    } catch (err: any) {
-      setErrors({ email: err.message });
-    } finally {
-      setLoading(false);
+ 
+
+// const navigate = useNavigate();
+
+const handleGoogle = async () => {
+  setLoading(true);
+
+  try {
+    if (!form.role) {
+      setErrors({ email: "Please select a role first" });
+      return;
     }
-  };
+
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    if (!user) throw new Error("Google auth failed");
+
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    // ✅ If user already exists → just redirect based on DB role
+    if (snap.exists()) {
+      const data = snap.data();
+
+      if (data.role === "counsellor" && data.verificationStatus === "pending") {
+        navigate("/pending-approval", { replace: true });
+        return;
+      }
+
+      navigate("/", { replace: true });
+      return;
+    }
+
+    // ✅ NEW USER → CREATE PROFILE
+    const role = form.role;
+
+    const userData = {
+      name: user.displayName || "No Name",
+      email: user.email || "",
+      photoURL: user.photoURL || null,
+      role,
+      createdAt: new Date(),
+      anonymousUsername: generateAnonymousUsername(),
+
+      verificationStatus:
+        role === "counsellor"
+          ? ("pending" as VerificationStatus)
+          : ("not_required" as VerificationStatus),
+
+      documentURL: role === "counsellor" ? null : undefined,
+    };
+
+    await setDoc(userRef, userData);
+
+    // 🔥 IMPORTANT: redirect based on role immediately
+    if (role === "counsellor") {
+      navigate("/pending-approval", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+
+  } catch (err: any) {
+    console.error(err);
+    setErrors({
+      email: err.message || "Something went wrong during Google signup",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const stepLabels = ["Personal Info", "Academic Info", "Your Credentials"];
 
   // ── Step content ──────────────────────────
   const steps = [
     // Step 0 — Personal info
-    <motion.div key="s0" variants={stagger} initial="hidden" animate="show" exit="exit" className="flex flex-col gap-4">
-      <motion.p
-        variants={fadeUp}
-        className="text-sm mb-1"
-        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
-      >
-        Let's start with the basics
-      </motion.p>
-      <Field label="Full Name" icon={icons.user} type="text" value={form.name} onChange={set("name")} placeholder="Your full name" error={errors.name} required />
-      <Field label="Age" icon={icons.age} type="number" value={form.age} onChange={set("age")} placeholder="e.g. 20" min={10} max={100} error={errors.age} required />
-      <SelectField label="Role" icon={icons.role} value={form.role} onChange={set("role")} error={errors.role}>
-        <option value="student">Student</option>
-        <option value="counselor">Counselor</option>
-      </SelectField>
-    </motion.div>,
+    <motion.div
+  key="s0"
+  variants={stagger}
+  initial="hidden"
+  animate="show"
+  exit="exit"
+  className="flex flex-col gap-4"
+>
+  <motion.p
+    variants={fadeUp}
+    className="text-sm mb-1"
+    style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+  >
+    Let's start with the basics
+  </motion.p>
+
+  <Field
+    label="Full Name"
+    icon={icons.user}
+    type="text"
+    value={form.name}
+    onChange={set("name")}
+    placeholder="Your full name"
+    error={errors.name}
+    required
+  />
+
+  <Field
+    label="Age"
+    icon={icons.age}
+    type="number"
+    value={form.age}
+    onChange={set("age")}
+    placeholder="e.g. 20"
+    min={10}
+    max={100}
+    error={errors.age}
+    required
+  />
+
+  <SelectField
+    label="Role"
+    icon={icons.role}
+    value={form.role}
+    onChange={set("role")}
+    error={errors.role}
+  >
+    <option value="student">Student</option>
+    <option value="counsellor">Counsellor</option>
+  </SelectField>
+</motion.div>,
 
     // Step 1 — Academic info
-    <motion.div key="s1" variants={stagger} initial="hidden" animate="show" exit="exit" className="flex flex-col gap-4">
-      <motion.p
-        variants={fadeUp}
-        className="text-sm mb-1"
-        style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+   <motion.div
+  key="s1"
+  variants={stagger}
+  initial="hidden"
+  animate="show"
+  exit="exit"
+  className="flex flex-col gap-4"
+>
+  <motion.p
+    variants={fadeUp}
+    className="text-sm mb-1"
+    style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+  >
+    {form.role === "student"
+      ? "Tell us about your studies"
+      : "Tell us about your professional background"}
+  </motion.p>
+
+  {/* ✅ STUDENT FIELDS */}
+  {form.role === "student" && (
+    <>
+      <SelectField
+        label="Year of Study"
+        icon={icons.year}
+        value={form.year}
+        onChange={set("year")}
+        error={errors.year}
       >
-        Tell us about your studies
-      </motion.p>
-      <SelectField label="Year of Study" icon={icons.year} value={form.year} onChange={set("year")} error={errors.year}>
         <option value="">Select year</option>
         <option value="1">1st Year</option>
         <option value="2">2nd Year</option>
         <option value="3">3rd Year</option>
         <option value="4">4th Year</option>
       </SelectField>
-      <Field label="Branch / Department" icon={icons.branch} type="text" value={form.branch} onChange={set("branch")} placeholder="e.g. Computer Science" error={errors.branch} required />
-    </motion.div>,
+
+      <Field
+        label="Branch / Department"
+        icon={icons.branch}
+        type="text"
+        value={form.branch}
+        onChange={set("branch")}
+        placeholder="e.g. Computer Science"
+        error={errors.branch}
+      />
+    </>
+  )}
+
+  {/* ✅ COUNSELLOR FIELDS */}
+  {form.role === "counsellor" && (
+    <>
+      <Field
+        label="Qualification"
+        icon={icons.user}
+        type="text"
+        value={form.qualification}
+        onChange={set("qualification")}
+        placeholder="Your qualification"
+        error={errors.qualification}
+      />
+
+      <Field
+        label="Experience (Years)"
+        icon={icons.age}
+        type="text"
+        value={form.experience}
+        onChange={set("experience")}
+        placeholder="e.g. 3 years"
+        error={errors.experience}
+      />
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[10px] font-semibold uppercase tracking-[0.15em]"
+          style={{ color: "#8a9a5b", fontFamily: "'DM Sans', sans-serif" }}
+        >
+          Upload Document
+        </label>
+
+        <input
+          type="file"
+          accept=".pdf,.jpg,.png"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              document: e.target.files ? e.target.files[0] : null,
+            })
+          }
+        />
+      </div>
+    </>
+  )}
+</motion.div>,
 
     // Step 2 — Credentials
     <motion.div key="s2" variants={stagger} initial="hidden" animate="show" exit="exit" className="flex flex-col gap-4">

@@ -558,13 +558,66 @@ function LandingContent() {
   </div>
 </section>
 
-      {/* ── Footer ── */}
-      <footer style={{ background: "var(--charcoal)", padding: "48px 32px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--serif)", fontSize: 22, color: "#A8D5B5", fontStyle: "italic", marginBottom: 8 }}>Beacon</p>
-          <p style={{ fontFamily: "var(--sans)", fontSize: 13, color: "rgba(255,255,255,0.45)" }}>© 2024 Beacon. All rights reserved. · Made with care for every mind.</p>
+
+{/* ── Footer ── */}
+<footer style={{
+  background: "#1a2e23",
+  padding: "64px 32px 40px",
+  borderTop: "1px solid rgba(91,140,110,0.3)",
+}}>
+  <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+
+    {/* Top row */}
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
+
+      {/* Brand */}
+      <div style={{ maxWidth: 260 }}>
+        <p style={{ fontFamily: "var(--serif)", fontSize: 28, color: "#fff", fontStyle: "italic", marginBottom: 12 }}>The Beacon</p>
+        <p style={{ fontFamily: "var(--sans)", fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
+          A safe space for every mind. Connect with therapists, track your mood, and find calm.
+        </p>
+        {/* Green accent pill */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, background: "rgba(91,140,110,0.2)", border: "1px solid rgba(91,140,110,0.35)", borderRadius: 100, padding: "6px 14px" }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#5B8C6E", animation: "pulse 2s infinite" }} />
+          <span style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 600, color: "#A8D5B5", letterSpacing: "0.8px" }}>Always here for you</span>
         </div>
-      </footer>
+      </div>
+
+      {/* Links */}
+      <div style={{ display: "flex", gap: 56, flexWrap: "wrap" }}>
+        <div>
+          <p style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#5B8C6E", marginBottom: 16 }}>Platform</p>
+          {["Home", "About Us", "Article", "Help"].map(l => (
+            <a key={l} href="#" style={{ display: "block", fontFamily: "var(--sans)", fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 10 }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#A8D5B5")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+            >{l}</a>
+          ))}
+        </div>
+        <div>
+          <p style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#5B8C6E", marginBottom: 16 }}>Support</p>
+          {["Privacy Policy", "Terms of Use"].map(l => (
+            <a key={l} href="#" style={{ display: "block", fontFamily: "var(--sans)", fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 10 }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#A8D5B5")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+            >{l}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Divider */}
+    <div style={{ borderTop: "1px solid rgba(91,140,110,0.2)", paddingTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+      <p style={{ fontFamily: "var(--sans)", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+        © 2024 Beacon. All rights reserved.
+      </p>
+      <p style={{ fontFamily: "var(--sans)", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+        Made with care for every mind 🌿
+      </p>
+    </div>
+
+  </div>
+</footer>
     </>
   );
 }
@@ -671,6 +724,7 @@ export default function Index() {
         {isLoggedIn && (
           <>
             <Header/>
+           <div style={{ margin: "10px" }}></div>
             <HeroSection />
             <LandingContent />
           </>

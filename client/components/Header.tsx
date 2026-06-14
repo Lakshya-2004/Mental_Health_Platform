@@ -368,7 +368,8 @@ export default function Header() {
   const [anonName, setAnonName] = useState<string>("User");
   const navigate = useNavigate();
 
-  const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+  const getAvatar = (uid: string) =>
+  `https://api.dicebear.com/7.x/thumbs/svg?seed=${uid}&radius=50`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -435,10 +436,10 @@ export default function Header() {
   };
 
   const navLinks = [
-    { label: "Home",  href: "/",        icon: "🔍" },
-    { label: "About Us",  href: "/about",        icon: "🌿" },
-    { label: "Article",   href: "/article", icon: "📖" },
-    { label: "Help",      href: "/help",        icon: "💬" },
+    { label: "Home", href: "/", icon: "🔍" },
+    { label: "About Us", href: "/about", icon: "🌿" },
+    { label: "Article", href: "/article", icon: "📖" },
+    { label: "Help", href: "/help", icon: "💬" },
   ];
 
   return (
@@ -469,7 +470,7 @@ export default function Header() {
               <>
                 <div className="hdr-user">
                   <img
-                    src={user.photoURL || defaultAvatar}
+                    src={user.photoURL || getAvatar(user.uid)}
                     className="hdr-avatar"
                     alt="avatar"
                   />
@@ -534,7 +535,7 @@ export default function Header() {
             {user && (
               <div className="drawer-user">
                 <img
-                  src={user.photoURL || defaultAvatar}
+                  src={user.photoURL || getAvatar(user.uid)}
                   className="drawer-avatar"
                   alt="avatar"
                 />
