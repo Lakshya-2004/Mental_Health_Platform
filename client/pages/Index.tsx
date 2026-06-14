@@ -228,7 +228,7 @@ function LandingContent() {
       {/* ── Stats bar ── */}
       <div style={{ background: "var(--sage-pale)", borderBottom: "1px solid rgba(91,140,110,0.12)", padding: "28px 32px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 16 }}>
-          {[{ num: "10k+", label: "People supported" }, { num: "50+", label: "Expert therapists" }, { num: "98%", label: "Feel improvement" }].map(({ num, label }) => (
+          {[{ num: "100+", label: "People supported" }, { num: "5+", label: "Expert therapists" }, { num: "98%", label: "Feel improvement" }].map(({ num, label }) => (
             <div key={label} className="stat-item">
               <span className="stat-num">{num}</span>
               <span className="stat-label">{label}</span>

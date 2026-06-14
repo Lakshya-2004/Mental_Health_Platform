@@ -490,7 +490,7 @@ export default function HeroSection() {
                 <div className="hero-session-dot" />
                 <span className="hero-session-label">Live Session</span>
               </div>
-              <div className="hero-session-name">Dr.Trust </div>
+              <div className="hero-session-name">Dr. Trust Me </div>
               <div className="hero-session-sub">Anxiety & Stress · Available now</div>
              <NavLink
   to="/my-meetings"
