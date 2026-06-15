@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import Typed from "typed.js";
 import Header from "./Header";
 
+const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
 const MusicAssistant: React.FC = () => {
-  const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
   useEffect(() => {
     const typed = new Typed(".typing", {
       strings: [
@@ -23,28 +23,30 @@ const MusicAssistant: React.FC = () => {
   const detectMood = async () => {
     const input = document.getElementById("moodText") as HTMLInputElement;
     const text = input.value.trim();
-
     if (!text) return alert("Please describe how you're feeling!");
 
-    const res = await fetch(`${API_URL_PY}/detect_mood`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
-    });
+    try {
+        const res = await fetch(`${API_URL_PY}/detect_mood`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
+        });
+        const data = await res.json();
 
-    const data = await res.json();
+        document.getElementById("result")!.innerHTML =
+            `🌿 Your mood: <b>${data.mood.toUpperCase()}</b>`;
 
-    document.getElementById("result")!.innerHTML =
-      `🌿 Your mood: <b>${data.mood.toUpperCase()}</b>`;
-
-    document.getElementById("musicPlayer")!.innerHTML = `
-      <iframe 
-        src="${data.playlist}" 
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen"
-        class="music-iframe"
-      ></iframe>
-    `;
-  };
+        document.getElementById("musicPlayer")!.innerHTML = `
+            <iframe src="${data.playlist}" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen"
+                class="music-iframe">
+            </iframe>
+        `;
+    } catch (err) {
+        document.getElementById("result")!.innerHTML = 
+            `❌ Connection failed. Try again.`;
+    }
+};
 
   return (
     <>

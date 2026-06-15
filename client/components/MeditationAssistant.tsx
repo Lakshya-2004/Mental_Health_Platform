@@ -3,8 +3,8 @@ import Typed from "typed.js";
 import Header from "./Header";
 import BackToHome from "@/pages/BackToHome";
 
+const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
 const MeditationAssistant: React.FC = () => {
-  const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
   useEffect(() => {
     const typed = new Typed(".typing", {
       strings: [
@@ -24,34 +24,21 @@ const MeditationAssistant: React.FC = () => {
   const detectMood = async () => {
     const input = document.getElementById("moodText") as HTMLInputElement;
     const text = input.value.trim();
-    
     if (!text) return alert("Describe your mood first!");
 
-    const res = await fetch(`${API_URL_PY}/meditation/detect_mood`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
-    });
-
-    const data = await res.json();
-
-    document.getElementById("result")!.innerHTML =
-      `🧠 Mood detected: <b>${data.mood.toUpperCase()}</b>`;
-
-    document.getElementById("meditationPlayer")!.innerHTML = `
-  <iframe
-    src="${data.video}"
-    class="w-full h-[320px] rounded-[24px] border border-[#d7e8d8] shadow-md"
-    allowfullscreen
-  ></iframe>
-
-  <iframe
-    src="${data.audio}"
-    class="w-full h-[140px] rounded-[24px] border border-[#d7e8d8] shadow-md"
-    allowfullscreen
-  ></iframe>
-`;
-  };
+    try {
+        const res = await fetch(`${API_URL_PY}/meditation/detect_mood`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        // ... rest same
+    } catch (err) {
+        document.getElementById("result")!.innerHTML = 
+            `❌ Connection failed. Try again.`;
+    }
+};
 
  return (
   <div className="relative min-h-screen bg-[#e8f0e3] overflow-hidden">

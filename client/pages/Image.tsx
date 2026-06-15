@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
-import BackToHome from './BackToHome';
+
 // --- API Configuration ---
 const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
 const API_URL = `${API_URL_PY}/api/chat`;
