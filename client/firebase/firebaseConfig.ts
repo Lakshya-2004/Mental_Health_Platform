@@ -7,15 +7,20 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBWwfO03TibkIHWFKeRP3iMQYAhgw013yw",
-  authDomain: "the-beacon-58243.firebaseapp.com",
-  projectId: "the-beacon-58243",
-  storageBucket: "the-beacon-58243.firebasestorage.app",
-  messagingSenderId: "515350358021",
-  appId: "1:515350358021:web:7eca88269eff076bb7946c",
-  measurementId: "G-1PEPVVJB3X",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
-
+console.log({
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+});
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
