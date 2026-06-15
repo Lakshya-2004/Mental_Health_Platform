@@ -30,6 +30,15 @@ mongoose
     process.exit(1);
   });
 
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://the-beacon-northstar.netlify.app/"
+    ]
+  })
+);
 // Routes
 app.use("/api/meetings", meetingRoutes);
 app.get("/", (req, res) => {

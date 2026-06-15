@@ -19,7 +19,7 @@ interface MeetingRequest {
 const UserMeetings = () => {
   const [meetings, setMeetings] = useState<MeetingRequest[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     fetchMyMeetings();
     const interval = setInterval(() => {
@@ -30,7 +30,7 @@ const UserMeetings = () => {
 
   const fetchMyMeetings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/meetings");
+      const response = await fetch(`${API_URL}/api/meetings`);
       const data = await response.json();
       const meetingsArray = data.meetings || [];
       const myMeetings = meetingsArray.filter(

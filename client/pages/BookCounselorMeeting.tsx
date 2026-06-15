@@ -9,7 +9,7 @@ const BookCounselorMeeting = () => {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
-
+const API_URL = import.meta.env.VITE_API_URL;
   const submitRequest = async () => {
     if (!date || !message.trim()) {
       alert("Please select a date and enter a message.");
@@ -28,7 +28,7 @@ const BookCounselorMeeting = () => {
 
       console.log("SENDING PAYLOAD:", payload);
 
-      const response = await fetch("http://localhost:5000/api/meetings", {
+      const response = await fetch(`${API_URL}/api/meetings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

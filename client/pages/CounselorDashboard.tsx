@@ -19,6 +19,7 @@ const CounselorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 const [authChecking, setAuthChecking] = useState(true);
+const API_URL = import.meta.env.VITE_API_URL;
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
     try {
@@ -80,7 +81,7 @@ useEffect(() => {
   
   const fetchRequests = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/meetings");
+      const response = await fetch(`${API_URL}/api/meetings`);
       const data = await response.json();
       console.log("API RESPONSE:", data);
       if (Array.isArray(data.meetings)) {
@@ -103,7 +104,7 @@ useEffect(() => {
         "https://meet.jit.si/beacon-" +
         Math.random().toString(36).substring(2);
       const response = await fetch(
-        `http://localhost:5000/api/meetings/${requestId}/accept`,
+        `${API_URL}/api/meetings/${requestId}/accept`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -120,7 +121,7 @@ useEffect(() => {
   const rejectMeeting = async (requestId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/meetings/${requestId}/reject`,
+        `${API_URL}/api/meetings/${requestId}/reject`,
         { method: "PATCH" }
       );
       if (!response.ok) throw new Error("Failed to reject request");
