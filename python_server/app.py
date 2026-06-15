@@ -176,7 +176,11 @@ def meme_chat():
 def create_app() -> Flask:
     app = Flask(__name__)
     
-    CORS(app, origins=["https://the-beacon-northstar.netlify.app"])
+    CORS(app, origins=[
+    "https://the-beacon-northstar.netlify.app",
+    "http://localhost:5173",
+    "http://localhost:3000",
+    ])
     app.register_blueprint(mira_bp)
     app.register_blueprint(mood_bp)
     app.register_blueprint(meditation_bp)
@@ -190,3 +194,4 @@ if __name__ == "__main__":
     app  = create_app()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
+    

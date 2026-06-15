@@ -3,6 +3,7 @@ import Typed from "typed.js";
 import Header from "./Header";
 
 const MusicAssistant: React.FC = () => {
+  const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
   useEffect(() => {
     const typed = new Typed(".typing", {
       strings: [
@@ -25,7 +26,7 @@ const MusicAssistant: React.FC = () => {
 
     if (!text) return alert("Please describe how you're feeling!");
 
-    const res = await fetch("http://127.0.0.1:5000/detect_mood", {
+    const res = await fetch(`${API_URL_PY}/detect_mood`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text })

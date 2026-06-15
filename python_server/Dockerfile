@@ -10,8 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV PORT=5000
-EXPOSE 5000
+EXPOSE 10000
 
 # Ensure NLTK data and TextBlob corpora are available at build time so runtime
 # workers don't attempt network downloads and fail under restricted environments.

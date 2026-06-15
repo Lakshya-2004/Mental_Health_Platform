@@ -24,7 +24,7 @@ const UserMeetings = () => {
     fetchMyMeetings();
     const interval = setInterval(() => {
       fetchMyMeetings();
-    }, 5000);
+    }, );
     return () => clearInterval(interval);
   }, []);
 

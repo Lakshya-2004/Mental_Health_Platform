@@ -2,8 +2,9 @@
 import React, { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
 import BackToHome from './BackToHome';
 // --- API Configuration ---
-const API_URL = 'http://127.0.0.1:5000/api/chat';
-const API_RESET_URL = 'http://127.0.0.1:5000/api/reset';
+const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
+const API_URL = `${API_URL_PY}/api/chat`;
+const API_RESET_URL = `${API_URL_PY}/api/reset`;
 
 const INITIAL_SYSTEM_MESSAGE = "You are MIRA 💫, an empathetic emotional chatbot and close friend.";
 const INITIAL_GREETING = "Hey there! I'm Mira. You can talk to me about anything. I'm here to listen and maybe share a meme or two! What's on your mind today? 😊";

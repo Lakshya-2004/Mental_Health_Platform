@@ -4,6 +4,7 @@ import Header from "./Header";
 import BackToHome from "@/pages/BackToHome";
 
 const MeditationAssistant: React.FC = () => {
+  const API_URL_PY = import.meta.env.VITE_PYTHON_API_URL;
   useEffect(() => {
     const typed = new Typed(".typing", {
       strings: [
@@ -23,10 +24,10 @@ const MeditationAssistant: React.FC = () => {
   const detectMood = async () => {
     const input = document.getElementById("moodText") as HTMLInputElement;
     const text = input.value.trim();
-
+    
     if (!text) return alert("Describe your mood first!");
 
-    const res = await fetch("http://127.0.0.1:5000/meditation/detect_mood", {
+    const res = await fetch(`${API_URL_PY}/meditation/detect_mood`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text })
