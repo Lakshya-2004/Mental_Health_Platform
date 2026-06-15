@@ -32,7 +32,12 @@ mongoose
 
 // Routes
 app.use("/api/meetings", meetingRoutes);
-
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "The Beacon Backend is running 🚀"
+  });
+});
 // Server Port
 const PORT = process.env.PORT || 5000;
 
