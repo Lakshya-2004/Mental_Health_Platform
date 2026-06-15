@@ -1,6 +1,6 @@
+from groq import Groq
 import json
 import os
-import requests
 from flask import Flask, Blueprint, request, jsonify, render_template
 from flask_cors import CORS
 from textblob import TextBlob
@@ -15,8 +15,6 @@ except Exception:
 #  CONFIG
 # ════════════════════════════════════════════════
 
-OLLAMA_URL  = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434/api/generate")
-MODEL_NAME  = os.environ.get("OLLAMA_MODEL", "llama3")
 
 SYSTEM_PROMPT = """
 You are MIRA 💫, an empathetic and supportive emotional chatbot. Your primary goal is to act as a close friend, listen to the user, validate their feelings, and offer a comforting or relevant meme URL based on the detected emotion.
@@ -66,34 +64,19 @@ def detect_mood(text: str) -> str:
     return "neutral"
 
 
-def call_ollama(messages: list) -> dict:
-    """Send conversation history to local Ollama and return parsed JSON."""
-    payload = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
-    try:
-        resp = requests.post(
-            OLLAMA_URL,
-            json={
-                "model":   MODEL_NAME,
-                "messages": payload,
-                "format":  "json",
-                "options": {"temperature": 0.7},
-                "stream":  False,
-            },
-            timeout=120,
-        )
-        resp.raise_for_status()
-        raw = resp.json()["response"].strip()
-        # Strip markdown code fences if model wraps output
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-        return json.loads(raw.strip())
-    except requests.exceptions.RequestException as e:
-        raise ConnectionError(f"Ollama not reachable: {e}")
-    except (json.JSONDecodeError, KeyError):
-        raise ValueError("Invalid JSON returned from model")
 
+groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+def call_groq(messages: list) -> dict:
+    response = groq_client.chat.completions.create(
+        model="llama3-70b-8192",
+        messages=[{"role": "system", "content": SYSTEM_PROMPT}] + messages,
+        response_format={"type": "json_object"},
+        temperature=0.7,
+        max_tokens=1000,
+        stream=False,  # keep False for JSON parsing
+    )
+    return json.loads(response.choices[0].message.content)
 
 # ════════════════════════════════════════════════
 #  MIRA BLUEPRINT  (/api)
@@ -120,7 +103,7 @@ def chat():
     chat_history.append({"role": "user", "content": user_message})
 
     try:
-        result = call_ollama(chat_history[-10:])
+        result = call_groq(chat_history[-10:])
         chat_history.append({"role": "assistant", "content": result.get("reply", "")})
         return jsonify(result)
     except (ConnectionError, ValueError) as e:
