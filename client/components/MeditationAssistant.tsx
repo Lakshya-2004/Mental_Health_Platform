@@ -21,7 +21,7 @@ const MeditationAssistant: React.FC = () => {
     return () => typed.destroy();
   }, []);
 
-  const detectMood = async () => {
+ const detectMood = async () => {
     const input = document.getElementById("moodText") as HTMLInputElement;
     const text = input.value.trim();
     if (!text) return alert("Describe your mood first!");
@@ -33,9 +33,25 @@ const MeditationAssistant: React.FC = () => {
             body: JSON.stringify({ text })
         });
         const data = await res.json();
-        // ... rest same
+
+        // ← THIS PART IS MISSING IN YOUR CODE
+        document.getElementById("result")!.innerHTML =
+            `🧠 Mood detected: <b>${data.mood.toUpperCase()}</b>`;
+
+        document.getElementById("meditationPlayer")!.innerHTML = `
+            <iframe
+                src="${data.video}"
+                class="w-full h-[320px] rounded-[24px] border border-[#d7e8d8] shadow-md"
+                allowfullscreen
+            ></iframe>
+            <iframe
+                src="${data.audio}"
+                class="w-full h-[140px] rounded-[24px] border border-[#d7e8d8] shadow-md"
+                allowfullscreen
+            ></iframe>
+        `;
     } catch (err) {
-        document.getElementById("result")!.innerHTML = 
+        document.getElementById("result")!.innerHTML =
             `❌ Connection failed. Try again.`;
     }
 };
