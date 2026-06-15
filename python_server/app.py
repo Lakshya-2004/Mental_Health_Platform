@@ -181,7 +181,7 @@ def create_app() -> Flask:
     app.register_blueprint(mood_bp)
     app.register_blueprint(meditation_bp)
     app.register_blueprint(main_bp)
-
+  
     return app
 
 
@@ -189,4 +189,4 @@ if __name__ == "__main__":
     print("🚀 Starting Flask server...")
     app  = create_app()
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
