@@ -587,7 +587,7 @@ export default function Header() {
 
       {/* ── CHAT WINDOW ── */}
       {chatOpen && (
-        <div id="bp-embedded-webchat" className="hdr-chat" />
+        <div  />
       )}
     </>
   );
