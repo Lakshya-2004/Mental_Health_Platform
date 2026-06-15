@@ -36,12 +36,29 @@ const MusicAssistant: React.FC = () => {
         document.getElementById("result")!.innerHTML =
             `🌿 Your mood: <b>${data.mood.toUpperCase()}</b>`;
 
-        document.getElementById("musicPlayer")!.innerHTML = `
-            <iframe src="${data.playlist}" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen"
-                class="music-iframe">
-            </iframe>
-        `;
+       document.getElementById("musicPlayer")!.innerHTML = `
+    <div style="
+        margin-top: 24px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(90,138,72,0.18);
+        border: 1px solid rgba(90,138,72,0.15);
+        background: #f4f8f1;
+        width: 100%;
+    ">
+        <iframe 
+            src="${data.playlist}" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen"
+            style="
+                width: 100%;
+                height: clamp(280px, 40vw, 420px);
+                border: none;
+                display: block;
+            "
+        ></iframe>
+    </div>
+`;
+        
     } catch (err) {
         document.getElementById("result")!.innerHTML = 
             `❌ Connection failed. Try again.`;
