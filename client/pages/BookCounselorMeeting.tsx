@@ -9,7 +9,7 @@ const BookCounselorMeeting = () => {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
-const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
   const submitRequest = async () => {
     if (!date || !message.trim()) {
       alert("Please select a date and enter a message.");
@@ -20,7 +20,7 @@ const API_URL = import.meta.env.VITE_API_URL;
       setLoading(true);
       const payload = {
         userId: auth.currentUser?.uid,
-        userName: auth.currentUser?.displayName,
+        userName: auth.currentUser?.displayName || auth.currentUser?.email?.split('@')[0] || "Anonymous",
         userEmail: auth.currentUser?.email,
         preferredDate: date,
         message,
@@ -68,7 +68,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 
       <div className="max-w-xl mx-auto">
-     
+
 
         {/* Header */}
         <p
@@ -201,7 +201,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             {/* Footer */}
             <div className="flex items-center justify-between flex-wrap gap-3">
-               <BackToHome />
+              <BackToHome />
               <span
                 className="flex items-center gap-1.5 text-xs"
                 style={{ color: "#a4ac88" }}

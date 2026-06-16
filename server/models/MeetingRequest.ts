@@ -7,10 +7,10 @@ const meetingRequestSchema = new mongoose.Schema(
       required: true,
     },
 
-    userName: {
-      type: String,
-      required: true,
-    },
+  
+    userName: { type: String, 
+      required: false, 
+      default: "Anonymous" },
 
     userEmail: {
       type: String,
