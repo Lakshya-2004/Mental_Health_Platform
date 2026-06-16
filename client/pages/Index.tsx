@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Header from "@/components/Header";
 import { motion, Variants } from "framer-motion";
 import Data from "../components/cardDetails/storage.json";
@@ -12,6 +12,12 @@ import { Link } from "react-router-dom";
 import FAQSection from "@/components/Faqsection";
 import StressCategoriesSection from "@/components/Stresscategoriessection";
 
+declare global {
+  interface Window {
+    botpress: any;
+    botpressWebChat: any;
+  }
+}
 const tokens = {
   sage: "#5B8C6E",
   sageMid: "#4A7560",
@@ -220,7 +226,7 @@ function ImageRow({ imgs, rowIdx }: { imgs: Img[]; rowIdx?: number }) {
 }
 
 // ─── Shared landing page content (visible to ALL users) ───────────────────────
-function LandingContent() {
+function LandingContent({ onOpenChatbot }: { onOpenChatbot: () => void }) {
   const [showCards, setShowCards] = useState(false);
 
   return (
@@ -348,9 +354,15 @@ function LandingContent() {
             <span style={{ color: "var(--sage)", fontStyle: "italic" }}>Beacon </span>— for the people, by the people who care.
           </h2>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginBottom: 48 }}>
-            {[{ name: "Image Therapy", url: "/IB" }, { name: "AI ChatBot", url: "/chatbot" }, { name: "Detox Bin", url: "/Detox" }, { name: "Diary", url: "/diary" }, { name: "Safe Space", url: "/Safespace" }].map((f) => (
-              <a key={f.name} href={f.url} className="feature-pill">{f.name}</a>
-            ))}
+            {[{ name: "Image Therapy", url: "/IB" }, { name: "AI ChatBot", url: null }, { name: "Detox Bin", url: "/Detox" }, { name: "Diary", url: "/diary" }, { name: "Safe Space", url: "/Safespace" }].map((f) =>
+              f.url ? (
+                <a key={f.name} href={f.url} className="feature-pill">{f.name}</a>
+              ) : (
+                <button key={f.name} onClick={onOpenChatbot} className="feature-pill" style={{ border: "1.5px solid rgba(91,140,110,0.2)", cursor: "pointer" }}>
+                  {f.name}
+                </button>
+              )
+            )}
           </div>
         </div>
       </section>
@@ -389,7 +401,7 @@ function LandingContent() {
         </div>
       </section> */}
 
-      <StressCategoriesSection/>
+      <StressCategoriesSection />
 
       {/* ── All features ── */}
       <section style={{ padding: "80px 32px" }}>
@@ -478,146 +490,146 @@ function LandingContent() {
           <p className="section-eyebrow">Begin today</p>
           <h3 style={{ fontFamily: "var(--serif)", fontSize: "clamp(24px,3.5vw,40px)", lineHeight: 1.3, marginBottom: 16 }}>Join us and connect with others who share your journey.</h3>
           <h2 style={{ fontFamily: "var(--serif)", fontSize: "clamp(26px,4vw,50px)", color: "var(--sage)", lineHeight: 1.25, marginBottom: 40 }}>Your journey to happiness begins with The Beacon.</h2>
-         
+
         </div>
       </section>
 
       {/* ── FAQ ── */}
-               
-      <FAQSection/>
-     
-     <section
-  style={{
-    padding: 0,
-    position: "relative",
-    overflow: "hidden",
-    borderRadius: "24px",
-    margin: "0 24px 40px",
-    boxShadow: "0 24px 64px rgba(75, 83, 32, 0.18)",
-  }}
->
-  {/* Image */}
-  <img
-    src="https://plus.unsplash.com/premium_photo-1733306436096-080018552c70?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    alt="Final banner"
-    style={{
-      width: "100%",
-      height: "420px",
-      objectFit: "cover",
-      objectPosition: "center 30%",
-      display: "block",
-      filter: "brightness(0.82) saturate(1.1)",
-    }}
-  />
 
-  {/* Olive gradient overlay */}
-  <div
-    style={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(to top, rgba(75,83,32,0.72) 0%, rgba(75,83,32,0.18) 50%, transparent 100%)",
-      pointerEvents: "none",
-    }}
-  />
+      <FAQSection />
 
-  {/* Text overlay */}
-  <div
-    style={{
-      position: "absolute",
-      bottom: "36px",
-      left: "40px",
-      right: "40px",
-    }}
-  >
-    <p
-      style={{
-        margin: 0,
-        fontSize: "13px",
-        fontWeight: 600,
-        letterSpacing: "4px",
-        textTransform: "uppercase",
-        color: "#e8ecce",
-        marginBottom: "8px",
-      }}
-    >
-      Beacon · Mental Wellness
-    </p>
-    <h2
-      style={{
-        margin: 0,
-        fontSize: "clamp(22px, 4vw, 36px)",
-        fontWeight: 700,
-        color: "#ffffff",
-        lineHeight: 1.25,
-        textShadow: "0 2px 12px rgba(0,0,0,0.25)",
-      }}
-    >
-      Your journey to well-being starts here.
-    </h2>
-  </div>
-</section>
+      <section
+        style={{
+          padding: 0,
+          position: "relative",
+          overflow: "hidden",
+          borderRadius: "24px",
+          margin: "0 24px 40px",
+          boxShadow: "0 24px 64px rgba(75, 83, 32, 0.18)",
+        }}
+      >
+        {/* Image */}
+        <img
+          src="https://plus.unsplash.com/premium_photo-1733306436096-080018552c70?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Final banner"
+          style={{
+            width: "100%",
+            height: "420px",
+            objectFit: "cover",
+            objectPosition: "center 30%",
+            display: "block",
+            filter: "brightness(0.82) saturate(1.1)",
+          }}
+        />
 
+        {/* Olive gradient overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(to top, rgba(75,83,32,0.72) 0%, rgba(75,83,32,0.18) 50%, transparent 100%)",
+            pointerEvents: "none",
+          }}
+        />
 
-{/* ── Footer ── */}
-<footer style={{
-  background: "#1a2e23",
-  padding: "64px 32px 40px",
-  borderTop: "1px solid rgba(91,140,110,0.3)",
-}}>
-  <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-
-    {/* Top row */}
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
-
-      {/* Brand */}
-      <div style={{ maxWidth: 260 }}>
-        <p style={{ fontFamily: "var(--serif)", fontSize: 28, color: "#fff", fontStyle: "italic", marginBottom: 12 }}>The Beacon</p>
-        <p style={{ fontFamily: "var(--sans)", fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
-          A safe space for every mind. Connect with therapists, track your mood, and find calm.
-        </p>
-        {/* Green accent pill */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, background: "rgba(91,140,110,0.2)", border: "1px solid rgba(91,140,110,0.35)", borderRadius: 100, padding: "6px 14px" }}>
-          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#5B8C6E", animation: "pulse 2s infinite" }} />
-          <span style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 600, color: "#A8D5B5", letterSpacing: "0.8px" }}>Always here for you</span>
+        {/* Text overlay */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "36px",
+            left: "40px",
+            right: "40px",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: "13px",
+              fontWeight: 600,
+              letterSpacing: "4px",
+              textTransform: "uppercase",
+              color: "#e8ecce",
+              marginBottom: "8px",
+            }}
+          >
+            Beacon · Mental Wellness
+          </p>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "clamp(22px, 4vw, 36px)",
+              fontWeight: 700,
+              color: "#ffffff",
+              lineHeight: 1.25,
+              textShadow: "0 2px 12px rgba(0,0,0,0.25)",
+            }}
+          >
+            Your journey to well-being starts here.
+          </h2>
         </div>
-      </div>
+      </section>
 
-      {/* Links */}
-      <div style={{ display: "flex", gap: 56, flexWrap: "wrap" }}>
-        <div>
-          <p style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#5B8C6E", marginBottom: 16 }}>Platform</p>
-          {["Home", "About Us", "Article", "Help"].map(l => (
-            <a key={l} href="#" style={{ display: "block", fontFamily: "var(--sans)", fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 10 }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#A8D5B5")}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
-            >{l}</a>
-          ))}
+
+      {/* ── Footer ── */}
+      <footer style={{
+        background: "#1a2e23",
+        padding: "64px 32px 40px",
+        borderTop: "1px solid rgba(91,140,110,0.3)",
+      }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+
+          {/* Top row */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
+
+            {/* Brand */}
+            <div style={{ maxWidth: 260 }}>
+              <p style={{ fontFamily: "var(--serif)", fontSize: 28, color: "#fff", fontStyle: "italic", marginBottom: 12 }}>The Beacon</p>
+              <p style={{ fontFamily: "var(--sans)", fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>
+                A safe space for every mind. Connect with therapists, track your mood, and find calm.
+              </p>
+              {/* Green accent pill */}
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, background: "rgba(91,140,110,0.2)", border: "1px solid rgba(91,140,110,0.35)", borderRadius: 100, padding: "6px 14px" }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#5B8C6E", animation: "pulse 2s infinite" }} />
+                <span style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 600, color: "#A8D5B5", letterSpacing: "0.8px" }}>Always here for you</span>
+              </div>
+            </div>
+
+            {/* Links */}
+            <div style={{ display: "flex", gap: 56, flexWrap: "wrap" }}>
+              <div>
+                <p style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#5B8C6E", marginBottom: 16 }}>Platform</p>
+                {["Home", "About Us", "Article", "Help"].map(l => (
+                  <a key={l} href="#" style={{ display: "block", fontFamily: "var(--sans)", fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 10 }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#A8D5B5")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                  >{l}</a>
+                ))}
+              </div>
+              <div>
+                <p style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#5B8C6E", marginBottom: 16 }}>Support</p>
+                {["Privacy Policy", "Terms of Use"].map(l => (
+                  <a key={l} href="#" style={{ display: "block", fontFamily: "var(--sans)", fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 10 }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#A8D5B5")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                  >{l}</a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div style={{ borderTop: "1px solid rgba(91,140,110,0.2)", paddingTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <p style={{ fontFamily: "var(--sans)", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+              © 2024 Beacon. All rights reserved.
+            </p>
+            <p style={{ fontFamily: "var(--sans)", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+              Made with care for every mind 🌿
+            </p>
+          </div>
+
         </div>
-        <div>
-          <p style={{ fontFamily: "var(--sans)", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "#5B8C6E", marginBottom: 16 }}>Support</p>
-          {["Privacy Policy", "Terms of Use"].map(l => (
-            <a key={l} href="#" style={{ display: "block", fontFamily: "var(--sans)", fontSize: 14, color: "rgba(255,255,255,0.5)", textDecoration: "none", marginBottom: 10 }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#A8D5B5")}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
-            >{l}</a>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* Divider */}
-    <div style={{ borderTop: "1px solid rgba(91,140,110,0.2)", paddingTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-      <p style={{ fontFamily: "var(--sans)", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
-        © 2024 Beacon. All rights reserved.
-      </p>
-      <p style={{ fontFamily: "var(--sans)", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
-        Made with care for every mind 🌿
-      </p>
-    </div>
-
-  </div>
-</footer>
+      </footer>
     </>
   );
 }
@@ -640,6 +652,38 @@ function PublicNav() {
 export default function Index() {
   const [authLoading, setAuthLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [botInitialized, setBotInitialized] = useState(false);
+
+  const openChatbot = () => { // ADD THIS FUNCTION
+    if (!botInitialized && window.botpress?.init) {
+      setBotInitialized(true);
+      let userInteracted = false;
+      const unlockAudio = () => {
+        if (!userInteracted) {
+          userInteracted = true;
+          speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+        }
+      };
+      window.addEventListener("click", unlockAudio);
+      window.addEventListener("keydown", unlockAudio);
+      window.botpress.init({
+        botId: "b7a022e3-94f6-4317-b840-cb0ccea6fe66",
+        clientId: "0bc71b51-1a41-4fa1-a147-4339105f567a",
+        selector: "#bp-embedded-webchat",
+        configuration: {
+          version: "v2", embedded: true, hideWidget: true,
+          themeMode: "light", botName: "Your Brand Assistant",
+          color: "#5B8C6E", variant: "solid", headerVariant: "glass",
+          radius: 3, fontFamily: "DM Sans", feedbackEnabled: false, soundEnabled: false,
+        },
+      });
+      window.botpress.on("webchat:ready", () => {
+        setTimeout(() => window.botpress.open(), 500);
+      });
+    } else if (botInitialized) {
+      window.botpress.open();
+    }
+  };
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -648,6 +692,8 @@ export default function Index() {
     });
     return () => unsub();
   }, []);
+
+
 
   if (authLoading) {
     return (
@@ -716,17 +762,17 @@ export default function Index() {
             </section>
 
             {/* Shared landing content */}
-            <LandingContent />
+            <LandingContent onOpenChatbot={openChatbot} />
           </>
         )}
-
+        <div id="bp-embedded-webchat" style={{ position: "fixed", bottom: 80, right: 20, width: 350, height: 500, zIndex: 1000, display: botInitialized ? "block" : "none" }} />
         {/* ── Logged in: full authenticated home ── */}
         {isLoggedIn && (
           <>
-            <Header/>
-           <div style={{ margin: "10px" }}></div>
+            <Header />
+            <div style={{ margin: "10px" }}></div>
             <HeroSection />
-            <LandingContent />
+            <LandingContent onOpenChatbot={openChatbot} />
           </>
         )}
 

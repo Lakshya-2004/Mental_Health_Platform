@@ -66,9 +66,9 @@ const API_URL = import.meta.env.VITE_API_URL;
         @import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
       `}</style>
 
-      <BackToHome />
 
       <div className="max-w-xl mx-auto">
+     
 
         {/* Header */}
         <p
@@ -201,6 +201,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             {/* Footer */}
             <div className="flex items-center justify-between flex-wrap gap-3">
+               <BackToHome />
               <span
                 className="flex items-center gap-1.5 text-xs"
                 style={{ color: "#a4ac88" }}

@@ -35,7 +35,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://the-beacon-northstar.netlify.app/"
+      "http://localhost:8080",
+      "https://the-beacon-northstar.netlify.app"
     ]
   })
 );

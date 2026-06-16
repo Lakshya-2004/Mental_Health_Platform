@@ -33,6 +33,10 @@ import PendingApproval from "./components/PendingApproval";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "@/components/AdminRoute";
 import RejectedPage from "./pages/RejectedPage";
+import { SafeSpaceAudioProvider } from "./pages/SafeSpaceAudioContext";
+import SafeSpaceMiniPlayer from "./pages/Safespaceminiplayer";
+
+
 
 
 
@@ -48,63 +52,66 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* ── Public routes ── */}
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/rejected"
-            element={<RejectedPage />}
-          />
-          {/* ── Protected routes ── */}
-          <Route path="/article" element={<P><Article /></P>} />
-          <Route
-            path="/book-counselor"
-            element={<P><BookCounselorMeeting /></P>}
-          />
-          <Route path="/my-meetings" element={<P><UserMeetings /></P>} />
-          <Route
-            path="/counsellor"
-            element={
-              <CounsellorRoute>
-                <CounselorDashboard />
-              </CounsellorRoute>
-            }
-          />
-          <Route
-            path="/pending-approval"
-            element={<PendingApproval />}
-          />
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/meeting/:meetLink"
-            element={<P><MeetingRoom /></P>}
-          />
-          <Route path="/help" element={<P><Help /></P>} />
-          <Route path="/Detox" element={<P><ThoughtDetox /></P>} />
-          <Route path="/IB" element={<P><IB /></P>} />
-          <Route path="/quiz" element={<P><MentalHealthQuiz /></P>} />
-          <Route path="/diary" element={<P><Diary /></P>} />
-          <Route path="/Safespace" element={<P><SafeSpace /></P>} />
-          <Route path="/music" element={<P><MusicAssistant /></P>} />
-          <Route path="/mild" element={<P><MildServices /></P>} />
-          <Route path="/moderate" element={<P><ModerateServices /></P>} />
-          <Route path="/severe" element={<P><SevereServices /></P>} />
-          <Route path="/meditation-video" element={<P><MeditationAssistant /></P>} />
-          <Route path="/explore" element={<P><ExplorePage /></P>} />
-        </Routes>
-      </BrowserRouter>
+      <SafeSpaceAudioProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* ── Public routes ── */}
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/rejected" element={<RejectedPage />} />
+
+            {/* ── Protected routes ── */}
+            <Route path="/article" element={<P><Article /></P>} />
+            <Route
+              path="/book-counselor"
+              element={<P><BookCounselorMeeting /></P>}
+            />
+            <Route path="/my-meetings" element={<P><UserMeetings /></P>} />
+            <Route
+              path="/counsellor"
+              element={
+                <CounsellorRoute>
+                  <CounselorDashboard />
+                </CounsellorRoute>
+              }
+            />
+            <Route
+              path="/pending-approval"
+              element={<PendingApproval />}
+            />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/meeting/:meetLink"
+              element={<P><MeetingRoom /></P>}
+            />
+            <Route path="/help" element={<P><Help /></P>} />
+            <Route path="/Detox" element={<P><ThoughtDetox /></P>} />
+            <Route path="/IB" element={<P><IB /></P>} />
+            <Route path="/quiz" element={<P><MentalHealthQuiz /></P>} />
+            <Route path="/diary" element={<P><Diary /></P>} />
+            <Route path="/Safespace" element={<P><SafeSpace /></P>} />
+            <Route path="/music" element={<P><MusicAssistant /></P>} />
+            <Route path="/mild" element={<P><MildServices /></P>} />
+            <Route path="/moderate" element={<P><ModerateServices /></P>} />
+            <Route path="/severe" element={<P><SevereServices /></P>} />
+            <Route path="/meditation-video" element={<P><MeditationAssistant /></P>} />
+            <Route path="/explore" element={<P><ExplorePage /></P>} />
+
+            {/* ── Catch-all: must stay LAST ── */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+        <SafeSpaceMiniPlayer />
+      </SafeSpaceAudioProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

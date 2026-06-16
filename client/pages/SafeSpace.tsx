@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Diary from './Diary';
-import IB from './Image';
+import { useNavigate } from 'react-router-dom';
 import BackToHome from "./BackToHome";
-const SOUNDSCAPES = [
-    { value: '', label: '— Select —' },
-    { value: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', label: 'Rain' },
-    { value: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', label: 'Ocean Waves' },
-    { value: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', label: 'Forest' },
-];
+import { useSafeSpaceAudio, SOUNDSCAPES } from './SafeSpaceAudioContext';
 
 const SESSION_DURATIONS = [
     { value: 0, label: '— Select —' },
@@ -23,48 +17,19 @@ const formatTime = (seconds: number): string => {
 };
 
 const SafeSpace: React.FC = () => {
-    const [currentPage, setCurrentPage] = useState<'breathing' | 'journal' | 'chat'>('breathing');
-    const [selectedSoundscape, setSelectedSoundscape] = useState<string>('');
+    const navigate = useNavigate();
+    const { selectedSoundscape, setSelectedSoundscape, isPlaying, play, pause, error, clearError } = useSafeSpaceAudio();
+
     const [selectedDuration, setSelectedDuration] = useState<number>(0);
     const [isSessionActive, setIsSessionActive] = useState<boolean>(false);
     const [remainingTime, setRemainingTime] = useState<number>(0);
     const [isBreathingExpanding, setIsBreathingExpanding] = useState<boolean>(true);
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [playbackError, setPlaybackError] = useState<string | null>(null);
 
-    const audioRef = useRef<HTMLAudioElement | null>(null);
     const countdownTimerRef = useRef<number | null>(null);
     const breathingIntervalRef = useRef<number | null>(null);
     const breathingBallRef = useRef<HTMLDivElement>(null);
     const navbarRef = useRef<HTMLElement>(null);
-
-    const handlePlay = useCallback(() => {
-        if (!selectedSoundscape) {
-            setPlaybackError("Please select a soundscape first.");
-            return;
-        }
-        let audio = audioRef.current;
-        if (!audio) {
-            audio = new Audio(selectedSoundscape);
-            audio.loop = true;
-            audioRef.current = audio;
-        }
-        if (audio.src !== selectedSoundscape) {
-            audio.pause();
-            audio.src = selectedSoundscape;
-        }
-        setPlaybackError(null);
-        audio.play().catch(err => {
-            if (err.name !== "AbortError") {
-                setPlaybackError("Audio playback blocked by browser.");
-            }
-        });
-    }, [selectedSoundscape]);
-
-    const handlePause = useCallback(() => {
-        if (audioRef.current) audioRef.current.pause();
-        setPlaybackError(null);
-    }, []);
 
     const updateBallSize = useCallback(() => {
         if (!breathingBallRef.current || !navbarRef.current) return;
@@ -77,14 +42,14 @@ const SafeSpace: React.FC = () => {
     }, [isBreathingExpanding]);
 
     useEffect(() => {
-        if (isSessionActive && currentPage === 'breathing') {
+        if (isSessionActive) {
             updateBallSize();
             window.addEventListener('resize', updateBallSize);
         } else {
             window.removeEventListener('resize', updateBallSize);
         }
         return () => window.removeEventListener('resize', updateBallSize);
-    }, [isBreathingExpanding, isSessionActive, currentPage, updateBallSize]);
+    }, [isBreathingExpanding, isSessionActive, updateBallSize]);
 
     const stopBreathingAnimation = useCallback(() => {
         if (breathingIntervalRef.current) {
@@ -123,12 +88,12 @@ const SafeSpace: React.FC = () => {
         setIsSessionActive(false);
         setRemainingTime(0);
         stopBreathingAnimation();
-        handlePause();
-    }, [stopBreathingAnimation, handlePause]);
+        // Note: soundtrack is NOT paused here on purpose — it's a separate,
+        // persistent layer from the breathing session itself.
+    }, [stopBreathingAnimation]);
 
     const handleStartSession = useCallback(() => {
         if (selectedDuration <= 0) {
-            setPlaybackError('Please select a session duration.');
             return;
         }
         handleStopSession();
@@ -147,60 +112,21 @@ const SafeSpace: React.FC = () => {
         return () => {
             if (countdownTimerRef.current) window.clearInterval(countdownTimerRef.current);
             if (breathingIntervalRef.current) window.clearInterval(breathingIntervalRef.current);
-            audioRef.current?.pause();
+            // Soundtrack deliberately NOT stopped on unmount — it persists
+            // globally via SafeSpaceAudioProvider in App.tsx.
         };
     }, []);
 
     const handleModalAction = (action: 'Journal' | 'Chat' | 'Rest') => {
         setShowModal(false);
         if (action === 'Journal') {
-            window.location.href = '/diary';
+            navigate('/diary');
         } else if (action === 'Chat') {
-            window.location.href = '/IB';
+            navigate('/IB');
         } else if (action === 'Rest') {
             handleStopSession();
-            setCurrentPage('breathing');
         }
     };
-
-    const ChatPage: React.FC = () => (
-        <div className="page-content">
-            <h2 id="modalTitle">Wellness Chatbot & Image Therapy</h2>
-            <p>Engage with our supportive chatbot or explore calming visuals designed to ground you.</p>
-            <div className="chat-interface">
-                <div className="chat-messages" style={{ height: '250px', overflowY: 'auto', padding: '14px', border: '1px solid rgba(180,200,255,0.12)', borderRadius: '12px', marginBottom: '12px', background: 'rgba(255,255,255,0.04)' }}>
-                    <p style={{ marginBottom: '8px' }}>
-                        <span style={{ color: '#b4c8f5', fontWeight: '600' }}>Bot:</span> Hello! I'm here to listen. How can I support you today?
-                    </p>
-                    <p style={{ textAlign: 'right', color: '#c7f2ea' }}>
-                        <span style={{ fontWeight: '600' }}>You:</span> I'm feeling a little overwhelmed.
-                    </p>
-                    <p style={{ marginBottom: '8px' }}>
-                        <span style={{ color: '#b4c8f5', fontWeight: '600' }}>Bot:</span> I understand. Let's take a deep breath together. Remember the 4-7-8 technique?
-                    </p>
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <input
-                        type="text"
-                        placeholder="Type your message…"
-                        style={{ flexGrow: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid rgba(180,200,255,0.15)', background: 'rgba(255,255,255,0.06)', color: '#eaeaea', fontSize: '0.9rem', outline: 'none' }}
-                    />
-                    <button
-                        className="chat-send-btn"
-                        onClick={() => console.log("Message Sent!")}
-                    >
-                        Send
-                    </button>
-                </div>
-            </div>
-            <button
-                className="image-therapy-btn"
-                onClick={() => console.log("Image Therapy activated!")}
-            >
-                ✦ Start Image Therapy
-            </button>
-        </div>
-    );
 
     const Styles = () => (
         <style>{`
@@ -218,9 +144,6 @@ const SafeSpace: React.FC = () => {
                 --accent-rose:   #c9a05a;
                 --text-primary:  #edf2e8;
                 --text-muted:    #8aab7a;
-                --ball-core:     rgba(120,190,100,0.75);
-                --ball-glow:     rgba(120,190,100,0.22);
-                --ball-ring:     rgba(120,190,100,0.40);
                 --nav-h:         68px;
                 --radius-sm:     8px;
                 --radius-md:     14px;
@@ -229,7 +152,7 @@ const SafeSpace: React.FC = () => {
 
             * { box-sizing: border-box; margin: 0; padding: 0; }
 
-            body {
+            .safespace-root {
                 font-family: 'DM Sans', sans-serif;
                 background: var(--bg-deep);
                 color: var(--text-primary);
@@ -237,10 +160,10 @@ const SafeSpace: React.FC = () => {
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
+                position: relative;
             }
 
-            /* ── Ambient background ── */
-            body::before {
+            .safespace-root::before {
                 content: '';
                 position: fixed;
                 inset: 0;
@@ -251,7 +174,6 @@ const SafeSpace: React.FC = () => {
                 z-index: 0;
             }
 
-            /* ── Navbar ── */
             .navbar {
                 position: fixed;
                 top: 0; left: 0;
@@ -280,7 +202,6 @@ const SafeSpace: React.FC = () => {
                 align-items: center;
                 gap: 8px;
             }
-
             .navbar h1::before {
                 content: '◈';
                 color: var(--accent-teal);
@@ -288,7 +209,6 @@ const SafeSpace: React.FC = () => {
                 opacity: 0.8;
             }
 
-            /* ── Controls ── */
             .controls {
                 display: flex;
                 align-items: center;
@@ -297,7 +217,6 @@ const SafeSpace: React.FC = () => {
                 flex-grow: 1;
                 margin-left: auto;
             }
-
             .controls label {
                 font-size: 0.78rem;
                 font-weight: 400;
@@ -305,7 +224,6 @@ const SafeSpace: React.FC = () => {
                 letter-spacing: 0.06em;
                 text-transform: uppercase;
             }
-
             .controls select {
                 padding: 7px 30px 7px 12px;
                 font-family: 'DM Sans', sans-serif;
@@ -323,21 +241,17 @@ const SafeSpace: React.FC = () => {
                 background-position: right 10px center;
                 transition: border-color 0.2s, background 0.2s;
             }
-
             .controls select:hover,
             .controls select:focus {
                 border-color: var(--border-hover);
                 background-color: #0d1409;
             }
-
             .controls select option {
                 background: #111a0f;
                 color: #c8ddb8;
             }
 
-            /* ── Buttons ── */
-            .controls button,
-            .btn {
+            .controls button, .btn {
                 padding: 8px 16px;
                 font-family: 'DM Sans', sans-serif;
                 font-size: 0.82rem;
@@ -351,21 +265,14 @@ const SafeSpace: React.FC = () => {
                 transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
                 white-space: nowrap;
             }
-
-            .controls button:hover:not(:disabled),
-            .btn:hover {
+            .controls button:hover:not(:disabled), .btn:hover {
                 background: rgba(255,255,255,0.12);
                 border-color: var(--border-hover);
                 transform: translateY(-1px);
                 box-shadow: 0 4px 16px rgba(0,0,0,0.25);
             }
-
             .controls button:active:not(:disabled) { transform: translateY(0); }
-
-            .controls button:disabled {
-                opacity: 0.35;
-                cursor: not-allowed;
-            }
+            .controls button:disabled { opacity: 0.35; cursor: not-allowed; }
 
             #playBtn {
                 background: rgba(100,180,80,0.15);
@@ -373,14 +280,6 @@ const SafeSpace: React.FC = () => {
                 color: var(--accent-teal);
             }
             #playBtn:hover { background: rgba(100,180,80,0.26); border-color: rgba(100,180,80,0.55); }
-
-            /* Back button — rose tint */
-            .btn-back {
-                background: rgba(201,123,138,0.10) !important;
-                border-color: rgba(201,123,138,0.28) !important;
-                color: var(--accent-rose) !important;
-            }
-            .btn-back:hover { background: rgba(201,123,138,0.20) !important; }
 
             #startSession {
                 background: rgba(140,195,100,0.14);
@@ -392,7 +291,6 @@ const SafeSpace: React.FC = () => {
                 border-color: rgba(140,195,100,0.52);
             }
 
-            /* ── Countdown ── */
             #countdown {
                 font-family: 'Cormorant Garamond', serif;
                 font-size: 1.4rem;
@@ -404,7 +302,6 @@ const SafeSpace: React.FC = () => {
                 opacity: 0.9;
             }
 
-            /* ── Main content area ── */
             main {
                 margin-top: var(--nav-h);
                 flex-grow: 1;
@@ -417,7 +314,6 @@ const SafeSpace: React.FC = () => {
                 z-index: 1;
             }
 
-            /* ── Breathing section ── */
             .breathing-section {
                 width: 100%;
                 height: 100%;
@@ -444,8 +340,6 @@ const SafeSpace: React.FC = () => {
                 z-index: 5;
                 overflow: visible;
             }
-
-            /* Subtle inner shimmer */
             #breathingBall::after {
                 content: '';
                 position: absolute;
@@ -459,7 +353,6 @@ const SafeSpace: React.FC = () => {
                 pointer-events: none;
             }
 
-            /* ── Ripples ── */
             .ripple {
                 position: absolute;
                 border: 1.5px solid rgba(100,185,80,0.35);
@@ -476,10 +369,7 @@ const SafeSpace: React.FC = () => {
             }
             .ripple:nth-child(2) { animation-delay: 1.33s; }
             .ripple:nth-child(3) { animation-delay: 2.66s; }
-            .ripple.active {
-                opacity: 1;
-                animation-play-state: running;
-            }
+            .ripple.active { opacity: 1; animation-play-state: running; }
 
             @keyframes ripplePulse {
                 0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.55; }
@@ -487,85 +377,6 @@ const SafeSpace: React.FC = () => {
                 100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
             }
 
-            /* ── Page content card ── */
-            .page-content {
-                max-width: 580px;
-                width: 90%;
-                padding: 32px 36px;
-                background: var(--bg-glass);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid var(--border);
-                border-radius: var(--radius-lg);
-                box-shadow: 0 8px 40px rgba(0,0,0,0.35);
-                text-align: left;
-                margin: 0 auto;
-                animation: fadeSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-            }
-
-            .page-content h2 {
-                font-family: 'Cormorant Garamond', serif;
-                font-weight: 400;
-                font-size: 1.8rem;
-                color: var(--text-primary);
-                margin-bottom: 10px;
-            }
-
-            .page-content > p {
-                font-size: 0.9rem;
-                color: var(--text-muted);
-                line-height: 1.6;
-                margin-bottom: 20px;
-            }
-
-            @keyframes fadeSlideUp {
-                from { opacity: 0; transform: translateY(18px); }
-                to   { opacity: 1; transform: translateY(0); }
-            }
-
-            /* ── Chat send button ── */
-            .chat-send-btn {
-                padding: 12px 20px;
-                border-radius: 10px;
-                border: 1px solid rgba(94,203,184,0.30);
-                background: rgba(94,203,184,0.14);
-                color: var(--accent-teal);
-                font-family: 'DM Sans', sans-serif;
-                font-size: 0.85rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background 0.2s, transform 0.15s;
-                white-space: nowrap;
-            }
-            .chat-send-btn:hover {
-                background: rgba(94,203,184,0.25);
-                transform: translateY(-1px);
-            }
-
-            /* ── Image therapy button ── */
-            .image-therapy-btn {
-                margin-top: 18px;
-                width: 100%;
-                padding: 14px;
-                border-radius: var(--radius-md);
-                border: 1px solid var(--border);
-                background: var(--bg-surface);
-                color: var(--text-muted);
-                font-family: 'DM Sans', sans-serif;
-                font-size: 0.88rem;
-                font-weight: 400;
-                letter-spacing: 0.04em;
-                cursor: pointer;
-                transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
-            }
-            .image-therapy-btn:hover {
-                background: rgba(126,184,212,0.10);
-                border-color: rgba(126,184,212,0.28);
-                color: var(--accent-soft);
-                transform: translateY(-1px);
-            }
-
-            /* ── Error bar ── */
             .playback-error-bar {
                 position: fixed;
                 width: 100%;
@@ -580,11 +391,7 @@ const SafeSpace: React.FC = () => {
                 border-bottom: 1px solid rgba(201,123,138,0.30);
                 animation: fadeSlideUp 0.3s ease both;
             }
-            .playback-error-bar p {
-                font-size: 0.85rem;
-                color: #f0a8b2;
-                font-weight: 400;
-            }
+            .playback-error-bar p { font-size: 0.85rem; color: #f0a8b2; font-weight: 400; }
             .playback-error-bar button {
                 padding: 5px 14px;
                 border-radius: 6px;
@@ -597,7 +404,11 @@ const SafeSpace: React.FC = () => {
             }
             .playback-error-bar button:hover { background: rgba(201,123,138,0.28); }
 
-            /* ── Modal overlay ── */
+            @keyframes fadeSlideUp {
+                from { opacity: 0; transform: translateY(18px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+
             .modal {
                 display: none;
                 position: fixed;
@@ -610,11 +421,7 @@ const SafeSpace: React.FC = () => {
                 z-index: 300;
                 animation: fadeIn 0.3s ease both;
             }
-
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to   { opacity: 1; }
-            }
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
             .modal-content {
                 background: rgba(12,20,10,0.94);
@@ -627,7 +434,6 @@ const SafeSpace: React.FC = () => {
                 box-shadow: 0 24px 80px rgba(0,0,0,0.55);
                 animation: fadeSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
             }
-
             .modal-content p {
                 font-family: 'Cormorant Garamond', serif;
                 font-size: 1.45rem;
@@ -637,13 +443,7 @@ const SafeSpace: React.FC = () => {
                 margin-bottom: 28px;
                 line-height: 1.5;
             }
-
-            .modal-actions {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
+            .modal-actions { display: flex; flex-direction: column; gap: 10px; }
             .modal-content button {
                 width: 100%;
                 padding: 14px 20px;
@@ -662,126 +462,85 @@ const SafeSpace: React.FC = () => {
 
             #journalBtn { background: rgba(100,180,80,0.12); border-color: rgba(100,180,80,0.28); color: var(--accent-teal); }
             #journalBtn:hover { background: rgba(100,180,80,0.22); border-color: rgba(100,180,80,0.48); }
-
             #chatBtn { background: rgba(140,195,100,0.10); border-color: rgba(140,195,100,0.26); color: var(--accent-soft); }
             #chatBtn:hover { background: rgba(140,195,100,0.20); border-color: rgba(140,195,100,0.46); }
-
             #restBtn { color: var(--text-muted); }
 
-            /* ── Scrollbar ── */
             ::-webkit-scrollbar { width: 5px; height: 5px; }
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 10px; }
             ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
 
-            /* ── Focus rings ── */
-            *:focus-visible {
-                outline: 2px solid rgba(100,185,80,0.60);
-                outline-offset: 2px;
-            }
+            *:focus-visible { outline: 2px solid rgba(100,185,80,0.60); outline-offset: 2px; }
         `}</style>
     );
 
     return (
-        <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="safespace-root">
             <BackToHome position="top-right" />
             <Styles />
 
-            {playbackError && (
-                <div
-                    className="playback-error-bar"
-                    style={{ top: navbarRef.current?.offsetHeight || 68 }}
-                >
-                    <p>{playbackError}</p>
-                    <button onClick={() => setPlaybackError(null)}>Dismiss</button>
+            {error && (
+                <div className="playback-error-bar" style={{ top: navbarRef.current?.offsetHeight || 68 }}>
+                    <p>{error}</p>
+                    <button onClick={clearError}>Dismiss</button>
                 </div>
             )}
 
             <nav className="navbar" ref={navbarRef}>
                 <h1>SafeSpace</h1>
 
-                {currentPage !== 'breathing' && (
-                    <button
-                        className="btn btn-back"
-                        onClick={() => {
-                            setCurrentPage('breathing');
-                            setPlaybackError(null);
-                        }}
-                    >
-                        ← Breathe
-                    </button>
-                )}
-
                 <div className="controls">
                     <label htmlFor="soundscapeSelect">Soundscape</label>
                     <select
                         id="soundscapeSelect"
                         value={selectedSoundscape}
-                        onChange={(e) => {
-                            setSelectedSoundscape(e.target.value);
-                            setPlaybackError(null);
-                        }}
+                        onChange={(e) => setSelectedSoundscape(e.target.value)}
                     >
                         {SOUNDSCAPES.map(s => (
-                            <option key={s.value} value={s.value}>{s.label}</option>
+                            <option key={s.value} value={s.value}>{s.icon} {s.label}</option>
                         ))}
                     </select>
-                    <button id="playBtn" onClick={handlePlay}>▶ Play</button>
-                    <button id="pauseBtn" onClick={handlePause}>⏸ Pause</button>
+                    <button id="playBtn" onClick={play} disabled={isPlaying}>▶ Play</button>
+                    <button id="pauseBtn" onClick={pause} disabled={!isPlaying}>⏸ Pause</button>
 
-                    {currentPage === 'breathing' && (
-                        <>
-                            <label htmlFor="timerSelect">Session</label>
-                            <select
-                                id="timerSelect"
-                                value={selectedDuration}
-                                onChange={(e) => setSelectedDuration(parseInt(e.target.value))}
-                                disabled={isSessionActive}
-                            >
-                                {SESSION_DURATIONS.map(d => (
-                                    <option key={d.value} value={d.value}>{d.label}</option>
-                                ))}
-                            </select>
-                            <button
-                                id="startSession"
-                                onClick={handleStartSession}
-                                disabled={isSessionActive}
-                            >
-                                Begin
-                            </button>
-                            <button
-                                id="stopSession"
-                                onClick={handleStopSession}
-                                disabled={!isSessionActive}
-                            >
-                                End
-                            </button>
-                            <div id="countdown">
-                                {isSessionActive ? formatTime(remainingTime) : formatTime(0)}
-                            </div>
-                        </>
-                    )}
+                    <label htmlFor="timerSelect">Session</label>
+                    <select
+                        id="timerSelect"
+                        value={selectedDuration}
+                        onChange={(e) => setSelectedDuration(parseInt(e.target.value))}
+                        disabled={isSessionActive}
+                    >
+                        {SESSION_DURATIONS.map(d => (
+                            <option key={d.value} value={d.value}>{d.label}</option>
+                        ))}
+                    </select>
+                    <button id="startSession" onClick={handleStartSession} disabled={isSessionActive || selectedDuration <= 0}>
+                        Begin
+                    </button>
+                    <button id="stopSession" onClick={handleStopSession} disabled={!isSessionActive}>
+                        End
+                    </button>
+                    <div id="countdown">
+                        {isSessionActive ? formatTime(remainingTime) : formatTime(0)}
+                    </div>
                 </div>
             </nav>
 
             <main>
-                {currentPage === 'breathing' && (
-                    <div className="breathing-section">
-                        <div
-                            id="breathingBall"
-                            ref={breathingBallRef}
-                            aria-label="Breathing ball animation"
-                            role="img"
-                            aria-live="polite"
-                        >
-                            <div className={`ripple ${isSessionActive ? 'active' : ''}`}></div>
-                            <div className={`ripple ${isSessionActive ? 'active' : ''}`}></div>
-                            <div className={`ripple ${isSessionActive ? 'active' : ''}`}></div>
-                        </div>
+                <div className="breathing-section">
+                    <div
+                        id="breathingBall"
+                        ref={breathingBallRef}
+                        aria-label="Breathing ball animation"
+                        role="img"
+                        aria-live="polite"
+                    >
+                        <div className={`ripple ${isSessionActive ? 'active' : ''}`}></div>
+                        <div className={`ripple ${isSessionActive ? 'active' : ''}`}></div>
+                        <div className={`ripple ${isSessionActive ? 'active' : ''}`}></div>
                     </div>
-                )}
-                {currentPage === 'journal' && <Diary />}
-                {currentPage === 'chat' && <IB />}
+                </div>
             </main>
 
             <div
@@ -794,9 +553,7 @@ const SafeSpace: React.FC = () => {
                 aria-describedby="modalDesc"
             >
                 <div className="modal-content">
-                    <p id="modalDesc">
-                        Session complete. How are you feeling now?
-                    </p>
+                    <p id="modalDesc">Session complete. How are you feeling now?</p>
                     <div className="modal-actions">
                         <button id="journalBtn" onClick={() => handleModalAction('Journal')}>
                             ✦ Write in Journal
