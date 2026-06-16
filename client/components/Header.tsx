@@ -5,7 +5,7 @@ import { auth, db } from "@/firebase/firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 declare global {
   interface Window {
     botpress: any;
@@ -369,7 +369,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const getAvatar = (uid: string) =>
-  `https://api.dicebear.com/7.x/thumbs/svg?seed=${uid}&radius=50`;
+    `https://api.dicebear.com/7.x/thumbs/svg?seed=${uid}&radius=50`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -451,14 +451,14 @@ export default function Header() {
         <nav className="hdr-inner">
 
           {/* Logo */}
-          <a href="/" className={`hdr-logo ${compact ? "hdr-logo-sm" : "hdr-logo-lg"}`}>
+          <Link to="/" className={`hdr-logo ${compact ? "hdr-logo-sm" : "hdr-logo-lg"}`}>
             The Beacon
-          </a>
+          </Link>
 
           {/* Desktop nav */}
           <div className="hdr-nav">
             {navLinks.map(({ label, href }) => (
-              <a key={label} href={href} className="hdr-link">{label}</a>
+              <Link key={label} to={href} className="hdr-link">{label}</Link>
             ))}
           </div>
 
@@ -484,7 +484,7 @@ export default function Header() {
 
             {/* Sign up (desktop, not logged in, not compact) */}
             {!user && !compact && (
-              <a href="/signup" className="hdr-signup">Sign Up</a>
+              <Link to="/signup" className="hdr-signup">Sign Up</Link>
             )}
 
             {/* Bot icon */}
@@ -549,28 +549,28 @@ export default function Header() {
             {/* Nav links */}
             <nav className="drawer-nav">
               {navLinks.map(({ label, href, icon }) => (
-                <a
+                <Link
                   key={label}
-                  href={href}
+                  to={href}
                   className="drawer-link"
                   onClick={() => setMenuOpen(false)}
                 >
                   <span className="drawer-link-icon">{icon}</span>
                   {label}
-                </a>
+                </Link>
               ))}
             </nav>
 
             {/* Footer actions */}
             <div className="drawer-footer">
               {!user && (
-                <a
-                  href="/signup"
+                <Link
+                  to="/signup"
                   className="drawer-btn-signup"
                   onClick={() => setMenuOpen(false)}
                 >
                   Sign Up — it's free
-                </a>
+                </Link>
               )}
               {user && (
                 <button
@@ -587,7 +587,7 @@ export default function Header() {
 
       {/* ── CHAT WINDOW ── */}
       {chatOpen && (
-        <div  />
+        <div />
       )}
     </>
   );
