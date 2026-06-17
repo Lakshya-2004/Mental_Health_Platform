@@ -35,6 +35,7 @@ import AdminRoute from "@/components/AdminRoute";
 import RejectedPage from "./pages/RejectedPage";
 import { SafeSpaceAudioProvider } from "./pages/SafeSpaceAudioContext";
 import SafeSpaceMiniPlayer from "./pages/Safespaceminiplayer";
+import QuizUnavailable from "./pages/QuizUnavailable";
 
 
 
@@ -96,7 +97,9 @@ const App = () => (
             <Route path="/help" element={<P><Help /></P>} />
             <Route path="/Detox" element={<P><ThoughtDetox /></P>} />
             <Route path="/IB" element={<P><IB /></P>} />
-            <Route path="/quiz" element={<P><MentalHealthQuiz /></P>} />
+            {/* <Route path="/quiz" element={<P><MentalHealthQuiz /></P>} /> */}
+             <Route path="/quiz" element={<P><QuizUnavailable/></P>} /> 
+            
             <Route path="/diary" element={<P><Diary /></P>} />
             <Route path="/Safespace" element={<P><SafeSpace /></P>} />
             <Route path="/music" element={<P><MusicAssistant /></P>} />
