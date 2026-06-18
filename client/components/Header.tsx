@@ -362,8 +362,6 @@ export default function Header() {
   const [isBot, setIsBot] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [compact, setCompact] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [botInitialized, setBotInitialized] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [anonName, setAnonName] = useState<string>("User");
   const navigate = useNavigate();
@@ -404,33 +402,7 @@ export default function Header() {
     "https://i.pinimg.com/1200x/76/c4/67/76c467f5cd94d9ad5fd8c5f8103e9523.jpg";
 
   const openChat = () => {
-    setChatOpen(true);
-    if (!botInitialized && window.botpress?.init) {
-      setBotInitialized(true);
-      let userInteracted = false;
-      const unlockAudio = () => {
-        if (!userInteracted) {
-          userInteracted = true;
-          speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-        }
-      };
-      window.addEventListener("click", unlockAudio);
-      window.addEventListener("keydown", unlockAudio);
-      window.botpress.init({
-        botId: "b7a022e3-94f6-4317-b840-cb0ccea6fe66",
-        clientId: "0bc71b51-1a41-4fa1-a147-4339105f567a",
-        selector: "#bp-embedded-webchat",
-        configuration: {
-          version: "v2", embedded: true, hideWidget: true,
-          themeMode: "light", botName: "Your Brand Assistant",
-          color: "#5B8C6E", variant: "solid", headerVariant: "glass",
-          radius: 3, fontFamily: "DM Sans", feedbackEnabled: false, soundEnabled: false,
-        },
-      });
-      window.botpress.on("webchat:ready", () => {
-        setTimeout(() => window.botpress.open(), 500);
-      });
-    } else if (botInitialized) {
+    if (window.botpress) {
       window.botpress.open();
     }
   };
@@ -490,7 +462,7 @@ export default function Header() {
             {/* Bot icon */}
             <img
               src={botImage}
-              onClick={openChat}
+              id="bp-toggle-chat"
               className="hdr-bot"
               alt="Chat assistant"
               title="Open assistant"
@@ -585,10 +557,7 @@ export default function Header() {
         </div>
       )}
 
-      {/* ── CHAT WINDOW ── */}
-      {chatOpen && (
-        <div />
-      )}
+
     </>
   );
 }
