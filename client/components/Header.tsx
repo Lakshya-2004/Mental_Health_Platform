@@ -398,8 +398,7 @@ export default function Header() {
     navigate("/");
   };
 
-  const botImage =
-    "https://i.pinimg.com/1200x/76/c4/67/76c467f5cd94d9ad5fd8c5f8103e9523.jpg";
+  
 
   const openChat = () => {
     if (window.botpress) {
@@ -461,7 +460,7 @@ export default function Header() {
 
             {/* Bot icon */}
             <img
-              src={botImage}
+              src="/photo.jpg"
               id="bp-toggle-chat"
               className="hdr-bot"
               alt="Chat assistant"

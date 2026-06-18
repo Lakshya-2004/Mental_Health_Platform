@@ -238,7 +238,7 @@ const About = () => {
               className="text-2xl font-semibold"
               style={{ color: "#2e3a1f", fontFamily: "'Lora', serif" }}
             >
-              Lakshya Ghanghoriya & Yash Patel
+              Lakshya Ghanghoriya
             </h3>
             <p className="mt-2 text-sm" style={{ color: "#8a9a5b" }}>
               Creating meaningful technology for mental well-being, emotional
